@@ -472,6 +472,12 @@ textarea.backup {
 }
 .chat-form .btn { min-height: 44px; padding: 0 16px; }
 .chat-form .btn svg { width: 22px; height: 22px; }
+.code-form { display: flex; gap: 8px; }
+.code-form input {
+  flex: 1; min-width: 0; min-height: 44px; padding: 0 12px; border: 1.5px solid var(--line); border-radius: 12px;
+  background: var(--bg); color: var(--ink); font: inherit; font-size: 16px;
+}
+.code-form .btn { min-height: 44px; }
 .ask-btn { display: inline-flex; align-items: center; gap: 6px; align-self: center; }
 .ask-btn svg { width: 18px; height: 18px; }
 
@@ -1109,8 +1115,13 @@ textarea.backup {
   }
 
   // ------------------------------------------------------------ chat
-  // Answers come from server.py on the Mac (Claude CLI). One thread per card, kept until reload.
-  const chat = { open: false, cardId: null, threads: {}, busy: false, error: null, avail: null };
+  // Answers come from the Cloudflare Worker in worker/ (OpenRouter behind it). One thread per card, kept until reload.
+  // CHAT_URL is the Worker's address, ending in "/". Empty means chat isn't set up yet.
+  const CHAT_URL = '';
+  const CODE_KEY = 'interviewcram.chatCode';
+  const chat = { open: false, cardId: null, threads: {}, busy: false, error: null, avail: null, needCode: false, pending: '' };
+  const getCode = () => { try { return localStorage.getItem(CODE_KEY) || ''; } catch (e) { return ''; } };
+  const setCode = (v) => { try { localStorage.setItem(CODE_KEY, v); } catch (e) { /* storage blocked */ } };
   const chatEl = document.createElement('div');
   chatEl.id = 'chat';
   document.body.appendChild(chatEl);
@@ -1180,10 +1191,12 @@ textarea.backup {
 
   async function checkAvail() {
     if (chat.avail) return;
+    if (!CHAT_URL) { chat.avail = false; renderChat(); return; }
+    if (!getCode()) chat.needCode = true;
     const ctl = new AbortController();
     const t = setTimeout(() => ctl.abort(), 2500);
     try {
-      const res = await fetch('api/health', { cache: 'no-store', signal: ctl.signal });
+      const res = await fetch(`${CHAT_URL}api/health`, { cache: 'no-store', signal: ctl.signal });
       chat.avail = res.ok && !!(await res.json()).ok;
     } catch (e) { chat.avail = false; }
     clearTimeout(t);
@@ -1198,8 +1211,14 @@ textarea.backup {
     const th = chat.threads[card.id] || [];
     let log;
     if (chat.avail === false) {
-      log = `<div class="msg err">Chat runs through Claude on your Mac. Start it there with <code>python3 server.py</code>, then open the app from the address it prints (same Wi-Fi).</div>
-        <button class="btn small ghost" data-chat="retry">Try again</button>`;
+      log = CHAT_URL
+        ? `<div class="msg err">Couldn’t reach the chat server. Check your connection and try again.</div><button class="btn small ghost" data-chat="retry">Try again</button>`
+        : '<div class="msg err">Chat isn’t set up yet: deploy the Worker in <code>worker/</code> and put its address in <code>CHAT_URL</code>.</div>';
+    } else if (chat.needCode) {
+      log = `<p class="chat-hint">Enter the access code you set on the chat Worker (<code>APP_TOKEN</code>). It’s saved on this device.</p>
+        <form class="code-form"><input type="password" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Access code" aria-label="Access code">
+          <button class="btn small" type="submit">Save</button></form>
+        ${chat.error ? `<div class="msg err">${esc(chat.error)}</div>` : ''}`;
     } else {
       log = th.length ? '' : `<p class="chat-hint">${ui.verdict || card.type === 'teach' ? 'Ask anything about this card.' : 'Ask to clarify the question. It won’t give away the answer unless you ask.'}</p>
         <div class="chat-sugs">${suggestions(card).map((s) => `<button data-chat="sug">${esc(s)}</button>`).join('')}</div>`;
@@ -1212,8 +1231,8 @@ textarea.backup {
         <div class="chat-head"><strong>Ask Claude<small>About this card</small></strong>
           <button class="icon-btn" data-chat="close" aria-label="Close chat">${I.close}</button></div>
         <div class="chat-log">${log}</div>
-        <form class="chat-form"><textarea rows="1" enterkeyhint="send" placeholder="Ask a question…" aria-label="Your question" ${chat.avail === false ? 'disabled' : ''}></textarea>
-          <button class="btn" type="submit" aria-label="Send" ${chat.busy || chat.avail === false ? 'disabled' : ''}>${I.send}</button></form>
+        <form class="chat-form"><textarea rows="1" enterkeyhint="send" placeholder="Ask a question…" aria-label="Your question" ${chat.avail === false || chat.needCode ? 'disabled' : ''}></textarea>
+          <button class="btn" type="submit" aria-label="Send" ${chat.busy || chat.avail === false || chat.needCode ? 'disabled' : ''}>${I.send}</button></form>
       </section>`;
     const nta = chatEl.querySelector('textarea');
     nta.value = draft;
@@ -1227,7 +1246,8 @@ textarea.backup {
     chat.open = true; chat.cardId = card.id; chat.error = null;
     renderChat();
     checkAvail();
-    if (chat.avail !== false && !(chat.threads[card.id] || []).length) chatEl.querySelector('textarea').focus();
+    const field = chatEl.querySelector(chat.needCode ? '.code-form input' : 'textarea');
+    if (chat.avail !== false && field && !(chat.threads[card.id] || []).length) field.focus();
   }
 
   async function sendChat(text) {
@@ -1240,16 +1260,17 @@ textarea.backup {
     renderChat();
     chatEl.querySelector('textarea').value = '';
     try {
-      const res = await fetch('api/chat', {
-        method: 'POST', headers: { 'Content-Type': 'application/json' },
+      const res = await fetch(`${CHAT_URL}api/chat`, {
+        method: 'POST', headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${getCode()}` },
         body: JSON.stringify({ context: cardContext(card), messages: th }),
       });
       const data = await res.json().catch(() => ({}));
-      if (!res.ok || !data.reply) throw new Error(data.error || `The Mac server answered ${res.status}.`);
+      if (res.status === 401) { chat.needCode = true; chat.pending = text; throw new Error(getCode() ? 'That access code didn’t work.' : 'Enter the access code first.'); }
+      if (!res.ok || !data.reply) throw new Error(data.error || `The chat server answered ${res.status}.`);
       th.push({ role: 'assistant', content: data.reply });
     } catch (e) {
       th.pop(); // give the question back so it can be resent
-      chat.error = e instanceof TypeError ? 'Couldn’t reach your Mac. Is server.py still running?' : e.message;
+      chat.error = e instanceof TypeError ? 'Couldn’t reach the chat server. Check your connection and try again.' : e.message;
       chat.busy = false;
       renderChat();
       const ta = chatEl.querySelector('textarea');
@@ -1268,7 +1289,20 @@ textarea.backup {
     else if (k === 'sug') sendChat(el.textContent);
     else if (k === 'retry') { chat.avail = null; renderChat(); checkAvail(); }
   });
-  chatEl.addEventListener('submit', (e) => { e.preventDefault(); sendChat(chatEl.querySelector('textarea').value); });
+  chatEl.addEventListener('submit', (e) => {
+    e.preventDefault();
+    if (e.target.classList.contains('code-form')) {
+      const v = e.target.querySelector('input').value.trim();
+      if (!v) return;
+      setCode(v); chat.needCode = false; chat.error = null;
+      const q = chat.pending; chat.pending = '';
+      renderChat();
+      if (q) sendChat(q);
+      else chatEl.querySelector('textarea').focus();
+      return;
+    }
+    sendChat(chatEl.querySelector('textarea').value);
+  });
   chatEl.addEventListener('keydown', (e) => {
     if (e.key === 'Enter' && !e.shiftKey && e.target.tagName === 'TEXTAREA') { e.preventDefault(); sendChat(e.target.value); }
     if (e.key === 'Escape') { chat.open = false; renderChat(); }

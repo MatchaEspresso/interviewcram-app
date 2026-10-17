@@ -3,19 +3,17 @@
 Duolingo-style, phone-first web app for drilling LeetCode patterns and Python syntax ahead of SWE/MLE intern coding interviews.
 
 ## Current state
-- The app is a single file: `index.html` (markup, CSS, JS and content inline, no build step). Around it: `manifest.webmanifest`, `sw.js` (offline cache), `icons/`, and `server.py` (local server + chat).
+- The app is a single file: `index.html` (markup, CSS, JS and content inline, no build step). Around it: `manifest.webmanifest`, `sw.js` (offline cache), `icons/`, and `worker/` (Cloudflare Worker for chat).
 - Originally built as a Claude artifact, exported here to keep developing in Claude Code.
 - Progress (streaks, completed lessons, review queue) is saved in the browser's `localStorage`.
 - Layout is a single centered phone column with safe-area insets, meant to be used on an iPhone (Safari → Share → Add to Home Screen).
-
 - Topics: Binary Search, Sliding Window, Two Pointers, Hash Map & Counting, BFS / DFS on Grids, Python Toolkit. `comingSoon` lists the patterns with no content yet (shown as "Not written yet", not locked).
-- "Ask Claude" chat panel on every activity card. It talks to `server.py`'s `/api/chat`, which runs `claude -p` with all tools disabled, using the Mac's Claude login. Hidden mid-question in timed challenges.
+- "Ask Claude" chat panel on every activity card, hidden mid-question in timed challenges. It POSTs the card context to the Worker at `CHAT_URL` (top of the chat section in `index.html`) with an access code saved in `localStorage`. The Worker (`worker/worker.js`) holds the tutor prompt and the OpenRouter key and forwards to the models in `MODELS` (`worker/wrangler.toml`), defaulting to free ones.
 
 ## Running it
-- Full app with chat: `python3 server.py` (stdlib only), then open the printed `http://<mac-name>.local:8000` on the phone (same Wi-Fi). The server only serves the app files, not the repo.
-- `PORT`, `CRAM_MODEL` (default `sonnet`) and `CRAM_CLAUDE` (command to run instead of `claude`, for testing) are env overrides.
-- Also deployed without chat at https://matchaespresso.github.io/interviewcram-app/ (GitHub Pages from `main`); there the chat panel explains it needs the Mac server.
-- Over plain `http://` to the Mac, the service worker doesn't register (iOS needs HTTPS), so that version is online-only.
+- Live at https://matchaespresso.github.io/interviewcram-app/ (GitHub Pages from `main`; a push redeploys in about a minute).
+- Locally: `python3 -m http.server 8000`. Chat calls the deployed Worker, which only allows origins in `ALLOWED_ORIGINS`.
+- Worker: from `worker/`, `npx wrangler deploy`. Secrets `OPENROUTER_API_KEY` and `APP_TOKEN` are set with `npx wrangler secret put` and never committed.
 
 ## Adding content
 - Cards follow the existing shapes; `options[0]` is always the correct answer. Give code cards `tests` (asserts).
@@ -28,5 +26,4 @@ Duolingo-style, phone-first web app for drilling LeetCode patterns and Python sy
 
 ## Ideas / next steps
 - Split content (topics, lessons, problems) out of `index.html` into a separate data file.
-- Make it a real PWA (manifest + service worker) so it works offline from the home screen.
 - Add more problems and patterns aimed at upcoming interviews.

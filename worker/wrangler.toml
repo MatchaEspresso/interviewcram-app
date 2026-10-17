@@ -1,0 +1,13 @@
+# Deploy from this folder: npx wrangler deploy
+# Secrets (asked for interactively, never stored in the repo):
+#   npx wrangler secret put OPENROUTER_API_KEY
+#   npx wrangler secret put APP_TOKEN        # the access code you type into the app once
+name = "interviewcram-chat"
+main = "worker.js"
+compatibility_date = "2026-09-01"
+
+[vars]
+# Comma-separated, tried in order. Free models have daily limits.
+# For better answers at roughly $0.0003 per question, use "anthropic/claude-haiku-5.5" (needs OpenRouter credits).
+MODELS = "google/gemma-4-31b-it:free,openrouter/free"
+ALLOWED_ORIGINS = "https://matchaespresso.github.io"

@@ -1,0 +1,1186 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>InterviewCram</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600..800&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: one centered phone column; topic list → topic page with every activity; activities are a full-screen overlay with a fixed action footer. */
+:root {
+  --bg: #F3F5FA;
+  --surface: #FFFFFF;
+  --raised: #E6EAF3;
+  --raised-deep: #CBD2E0;
+  --ink: #172033;
+  --muted: #5A657A;
+  --line: #D9DFEA;
+  --code-bg: #EEF1F8;
+  --code-ink: #1F2940;
+  --gold: #E39B0B;
+  --gold-deep: #B57A05;
+  --gold-soft: #FFF3D6;
+  --good: #1E9A54;
+  --good-deep: #157541;
+  --good-soft: #E2F5EA;
+  --bad: #D34343;
+  --bad-deep: #A83030;
+  --bad-soft: #FCE7E7;
+  --tok-kw: #8A3FD1;
+  --tok-str: #1C7F4B;
+  --tok-num: #B5560E;
+  --tok-com: #7C879B;
+  --tok-fn: #2350D8;
+  --tok-bi: #0F7C8C;
+  --acc-s: 78%;
+  --acc-l: 52%;
+  --accd-l: 38%;
+  --accs-l: 95%;
+  --acc-ink: #FFFFFF;
+  --hue: 226;
+  --font-display: "Bricolage Grotesque", "Avenir Next", system-ui, sans-serif;
+  --font-body: "Atkinson Hyperlegible", -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  --font-code: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  --radius: 16px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0E1320; --surface: #161D2E; --raised: #222B42; --raised-deep: #121828; --ink: #E5E9F2;
+    --muted: #96A0B5; --line: #2A3552; --code-bg: #10172A; --code-ink: #DCE3F0;
+    --gold: #F4B740; --gold-deep: #A9781A; --gold-soft: #3A2E10;
+    --good: #3DC27A; --good-deep: #23874F; --good-soft: #12301F;
+    --bad: #F06767; --bad-deep: #B13A3A; --bad-soft: #3A1818;
+    --tok-kw: #C792EA; --tok-str: #8BD49C; --tok-num: #F5A86B; --tok-com: #6E7A93; --tok-fn: #82AAFF; --tok-bi: #6FD3E0;
+    --acc-s: 85%; --acc-l: 64%; --accd-l: 42%; --accs-l: 20%; --acc-ink: #0B1020;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0E1320; --surface: #161D2E; --raised: #222B42; --raised-deep: #121828; --ink: #E5E9F2;
+  --muted: #96A0B5; --line: #2A3552; --code-bg: #10172A; --code-ink: #DCE3F0;
+  --gold: #F4B740; --gold-deep: #A9781A; --gold-soft: #3A2E10;
+  --good: #3DC27A; --good-deep: #23874F; --good-soft: #12301F;
+  --bad: #F06767; --bad-deep: #B13A3A; --bad-soft: #3A1818;
+  --tok-kw: #C792EA; --tok-str: #8BD49C; --tok-num: #F5A86B; --tok-com: #6E7A93; --tok-fn: #82AAFF; --tok-bi: #6FD3E0;
+  --acc-s: 85%; --acc-l: 64%; --accd-l: 42%; --accs-l: 20%; --acc-ink: #0B1020;
+  color-scheme: dark;
+}
+/* Accent is recomputed wherever a unit sets its own hue. */
+:root, [data-hue] {
+  --accent: hsl(var(--hue) var(--acc-s) var(--acc-l));
+  --accent-deep: hsl(var(--hue) var(--acc-s) var(--accd-l));
+  --accent-soft: hsl(var(--hue) var(--acc-s) var(--accs-l));
+}
+
+* { box-sizing: border-box; }
+html, body { background: var(--bg); color: var(--ink); }
+body {
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -webkit-tap-highlight-color: transparent;
+  overscroll-behavior-y: none;
+}
+button { font: inherit; color: inherit; cursor: pointer; }
+button:focus-visible, a:focus-visible, textarea:focus-visible, select:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+code, .mono { font-family: var(--font-code); }
+p { margin: 0; }
+h1, h2, h3 { font-family: var(--font-display); margin: 0; line-height: 1.15; text-wrap: balance; }
+
+/* ------------------------------------------------------------ app frame */
+.screen {
+  max-width: 560px;
+  margin: 0 auto;
+  padding-inline: 16px;
+  padding-block: 0 calc(96px + env(safe-area-inset-bottom, 0px));
+}
+.topbar {
+  position: sticky;
+  top: env(safe-area-inset-top, 0px);
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding-block: 12px;
+  background: var(--bg);
+}
+.brand { font-family: var(--font-display); font-weight: 800; font-size: 22px; letter-spacing: -0.02em; margin-right: auto; }
+.brand span { color: var(--accent); }
+.chip-stat {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 6px 10px; border-radius: 999px;
+  background: var(--surface); border: 1.5px solid var(--line);
+  font-weight: 700; font-variant-numeric: tabular-nums; font-size: 15px;
+}
+.chip-stat svg { width: 18px; height: 18px; }
+.chip-stat.hot { color: var(--gold); border-color: var(--gold); background: var(--gold-soft); }
+.chip-stat.cold { color: var(--muted); }
+
+.tabbar {
+  position: fixed; left: 0; right: 0; bottom: 0; z-index: 10;
+  display: flex; justify-content: center;
+  background: var(--surface);
+  border-top: 1.5px solid var(--line);
+  padding: 6px 8px calc(6px + env(safe-area-inset-bottom, 0px));
+}
+.tabbar-inner { display: flex; width: 100%; max-width: 560px; }
+.tab {
+  flex: 1; display: flex; flex-direction: column; align-items: center; gap: 2px;
+  padding: 6px 0; border: 0; background: none; border-radius: 12px;
+  color: var(--muted); font-size: 12px; font-weight: 700; letter-spacing: 0.02em;
+}
+.tab svg { width: 26px; height: 26px; }
+.tab[aria-current="page"] { color: var(--accent); background: var(--accent-soft); }
+.tab .badge {
+  position: absolute; transform: translate(14px, -4px);
+  min-width: 18px; height: 18px; padding: 0 5px; border-radius: 9px;
+  background: var(--bad); color: #fff; font-size: 11px; line-height: 18px; text-align: center;
+}
+.tab-icon { position: relative; display: flex; }
+
+/* ------------------------------------------------------------ buttons */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  min-height: 52px; padding: 0 20px;
+  border: 0; border-radius: 14px;
+  background: var(--accent); color: var(--acc-ink);
+  font-weight: 700; font-size: 16px; letter-spacing: 0.04em; text-transform: uppercase;
+  box-shadow: 0 4px 0 var(--accent-deep);
+  transition: transform 60ms ease, box-shadow 60ms ease;
+}
+.btn:active:not(:disabled) { transform: translateY(4px); box-shadow: 0 0 0 var(--accent-deep); }
+.btn:disabled { background: var(--raised); color: var(--muted); box-shadow: 0 4px 0 var(--raised-deep); cursor: default; }
+.btn.block { width: 100%; }
+.btn.ghost { background: var(--surface); color: var(--accent); box-shadow: 0 4px 0 var(--line); border: 2px solid var(--line); }
+.btn.good { background: var(--good); color: #fff; box-shadow: 0 4px 0 var(--good-deep); }
+.btn.bad { background: var(--bad); color: #fff; box-shadow: 0 4px 0 var(--bad-deep); }
+.btn.small { min-height: 40px; padding: 0 14px; font-size: 13px; border-radius: 12px; }
+.link-btn { border: 0; background: none; color: var(--accent); font-weight: 700; padding: 8px 4px; }
+
+/* ------------------------------------------------------------ path */
+.resume {
+  display: flex; align-items: center; gap: 12px;
+  margin-block: 4px 16px; padding: 14px 16px;
+  border-radius: var(--radius); background: var(--accent-soft); border: 2px solid var(--accent);
+}
+.resume p { flex: 1; min-width: 0; font-weight: 700; }
+.resume small { display: block; font-weight: 400; color: var(--muted); }
+
+.daily {
+  display: flex; align-items: center; gap: 14px;
+  margin-block: 4px 20px; padding: 14px 16px;
+  border-radius: var(--radius); background: var(--surface); border: 1.5px solid var(--line);
+}
+.daily .ring { flex: none; width: 52px; height: 52px; }
+.daily .ring circle { fill: none; stroke-width: 6; }
+.daily .ring .track { stroke: var(--raised); }
+.daily .ring .fill { stroke: var(--gold); stroke-linecap: round; transition: stroke-dashoffset 400ms ease; }
+.daily-text { flex: 1; min-width: 0; }
+.daily-text strong { font-family: var(--font-display); font-size: 18px; }
+.daily-text p { color: var(--muted); font-size: 14px; }
+
+.unit-head {
+  display: flex; align-items: center; gap: 12px;
+  padding: 16px; border-radius: var(--radius);
+  background: var(--accent); color: var(--acc-ink);
+  box-shadow: 0 5px 0 var(--accent-deep);
+}
+.unit-head > div { flex: 1; min-width: 0; }
+.unit-head small { display: block; font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; opacity: 0.85; }
+.unit-head h2 { font-size: 24px; letter-spacing: -0.01em; }
+.unit-head p { font-size: 14px; opacity: 0.9; }
+.unit-head .guide-btn {
+  flex: none; display: flex; flex-direction: column; align-items: center; gap: 2px;
+  border: 2px solid currentColor; border-radius: 12px; background: transparent; color: inherit;
+  padding: 8px 10px; font-size: 11px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase;
+}
+.unit-head .guide-btn svg { width: 22px; height: 22px; }
+
+.locked-list { display: flex; flex-direction: column; gap: 8px; margin-block: 0 24px; }
+.locked-list h3 { font-size: 15px; color: var(--muted); font-family: var(--font-body); letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 4px; }
+.locked {
+  display: flex; align-items: center; gap: 10px;
+  padding: 12px 14px; border-radius: 14px; border: 1.5px dashed var(--line); color: var(--muted);
+}
+.locked svg { width: 18px; height: 18px; flex: none; }
+
+/* ------------------------------------------------------------ topics */
+.section-title {
+  display: flex; align-items: center; gap: 8px;
+  font-size: 18px; margin-block: 22px 10px;
+}
+.section-title svg { width: 20px; height: 20px; color: var(--accent); }
+.quick {
+  display: flex; align-items: center; gap: 14px; width: 100%; text-align: left;
+  margin-block: 14px 0; padding: 14px 16px;
+  border: 2px solid var(--accent); border-radius: var(--radius); background: var(--accent-soft);
+  box-shadow: 0 4px 0 var(--accent);
+}
+.quick:active { transform: translateY(4px); box-shadow: none; }
+.quick strong { display: block; font-family: var(--font-display); font-size: 18px; color: var(--accent); }
+.quick small { color: var(--muted); }
+.quick-icon { flex: none; width: 44px; height: 44px; border-radius: 12px; display: grid; place-items: center; background: var(--accent); color: var(--acc-ink); }
+.quick-icon svg { width: 24px; height: 24px; }
+.topics { display: flex; flex-direction: column; gap: 12px; }
+.topic {
+  display: flex; align-items: flex-start; gap: 14px; width: 100%; text-align: left;
+  padding: 16px; border: 2px solid var(--line); border-radius: var(--radius); background: var(--surface);
+  box-shadow: 0 4px 0 var(--line);
+}
+.topic:active { transform: translateY(4px); box-shadow: none; }
+.topic-icon { flex: none; width: 52px; height: 52px; border-radius: 14px; display: grid; place-items: center; background: var(--accent); color: var(--acc-ink); box-shadow: 0 4px 0 var(--accent-deep); }
+.topic-icon svg { width: 28px; height: 28px; }
+.topic-text { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 4px; }
+.topic-text strong { font-family: var(--font-display); font-size: 20px; line-height: 1.2; }
+.topic-text small { color: var(--muted); font-size: 14px; }
+.bar { display: block; height: 10px; border-radius: 5px; background: var(--raised); overflow: hidden; margin-top: 4px; }
+.bar > span { display: block; height: 100%; border-radius: 5px; background: var(--accent); }
+.back { display: inline-flex; align-items: center; gap: 4px; border: 0; background: none; color: var(--accent); font-weight: 700; padding: 4px 0 12px; }
+.back svg { width: 20px; height: 20px; }
+
+/* ------------------------------------------------------------ activity rows */
+.lesson-row {
+  display: flex; align-items: center; gap: 12px; width: 100%;
+  padding: 14px; margin-bottom: 10px; text-align: left;
+  border: 2px solid var(--line); border-radius: 14px; background: var(--surface);
+  box-shadow: 0 3px 0 var(--line);
+}
+.lesson-row:active { transform: translateY(3px); box-shadow: none; }
+.lesson-row > div { flex: 1; min-width: 0; }
+.lesson-row strong { display: block; }
+.lesson-row small { color: var(--muted); }
+.lesson-row .tick { flex: none; width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center; background: var(--raised); color: var(--muted); }
+.lesson-row.done .tick { background: var(--gold); color: #fff; }
+.lesson-row .tick svg { width: 18px; height: 18px; }
+
+/* ------------------------------------------------------------ lesson */
+.lesson {
+  position: fixed; inset: 0; z-index: 30;
+  display: flex; flex-direction: column;
+  background: var(--bg);
+  padding-top: env(safe-area-inset-top, 0px);
+}
+.lesson-top { display: flex; align-items: center; gap: 12px; padding: 12px 16px; max-width: 640px; width: 100%; margin: 0 auto; }
+.icon-btn { flex: none; width: 40px; height: 40px; display: grid; place-items: center; border: 0; background: none; color: var(--muted); border-radius: 10px; }
+.icon-btn svg { width: 26px; height: 26px; }
+.progress { flex: 1; height: 16px; border-radius: 8px; background: var(--raised); overflow: hidden; }
+.progress > div { height: 100%; border-radius: 8px; background: var(--good); transition: width 300ms ease; min-width: 16px; }
+.timer { flex: none; font-weight: 700; font-variant-numeric: tabular-nums; color: var(--muted); min-width: 34px; text-align: right; }
+.timer.low { color: var(--bad); }
+
+.lesson-body { flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch; }
+.card { max-width: 640px; margin: 0 auto; padding: 4px 16px 24px; display: flex; flex-direction: column; gap: 16px; }
+.kind {
+  align-self: flex-start;
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 12px; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent);
+}
+.kind svg { width: 16px; height: 16px; }
+.kind.review { color: var(--bad); }
+.prompt { font-size: 19px; font-weight: 700; line-height: 1.4; }
+.prompt code, .rich code, .opt code, .fb-text code {
+  font-size: 0.86em; padding: 1px 5px; border-radius: 6px; background: var(--code-bg); color: var(--code-ink);
+  overflow-wrap: anywhere;
+}
+.rich { display: flex; flex-direction: column; gap: 10px; font-size: 16px; }
+.rich ul, .rich ol { margin: 0; padding-left: 22px; display: flex; flex-direction: column; gap: 6px; }
+.teach-title { font-size: 26px; letter-spacing: -0.01em; }
+
+.code {
+  margin: 0; padding: 12px;
+  font-family: var(--font-code); font-size: 12.5px; line-height: 1.6;
+  background: var(--code-bg); color: var(--code-ink);
+  border-radius: 12px; overflow-x: auto; white-space: pre; tab-size: 4;
+}
+.code .blank {
+  display: inline-block; min-width: 4ch; padding: 0 4px; border-radius: 5px;
+  border-bottom: 2px solid var(--accent); background: var(--accent-soft); color: var(--accent); font-weight: 600;
+}
+.code .blank.filled { border-bottom-style: solid; color: var(--code-ink); }
+.code .blank.good { background: var(--good-soft); border-color: var(--good); color: var(--good); }
+.code .blank.bad { background: var(--bad-soft); border-color: var(--bad); color: var(--bad); }
+.t-kw { color: var(--tok-kw); font-weight: 600; }
+.t-str { color: var(--tok-str); }
+.t-num { color: var(--tok-num); }
+.t-com { color: var(--tok-com); font-style: italic; }
+.t-fn { color: var(--tok-fn); }
+.t-bi { color: var(--tok-bi); }
+
+.options { display: flex; flex-direction: column; gap: 10px; }
+.opt {
+  width: 100%; text-align: left; padding: 14px 16px; min-height: 54px;
+  border: 2px solid var(--line); border-radius: 14px; background: var(--surface);
+  box-shadow: 0 4px 0 var(--line); font-size: 16px; line-height: 1.4;
+  transition: transform 60ms ease, box-shadow 60ms ease;
+}
+.opt:active:not(:disabled) { transform: translateY(3px); box-shadow: 0 1px 0 var(--line); }
+.opt.mono { font-family: var(--font-code); font-size: 14px; }
+.opt.mono code { background: none; padding: 0; font-size: 1em; }
+.opt[aria-pressed="true"] { border-color: var(--accent); background: var(--accent-soft); box-shadow: 0 4px 0 var(--accent); }
+.opt.right { border-color: var(--good); background: var(--good-soft); box-shadow: 0 4px 0 var(--good); }
+.opt.wrong { border-color: var(--bad); background: var(--bad-soft); box-shadow: 0 4px 0 var(--bad); }
+.opt:disabled { cursor: default; }
+.opt-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+
+/* bug hunt: tappable code lines */
+.lines { padding: 8px 0; }
+.lines .ln {
+  display: block; width: 100%; text-align: left; border: 0; background: none;
+  font: inherit; color: inherit; white-space: pre; padding: 2px 12px; min-height: 28px;
+}
+.lines .ln[aria-pressed="true"] { background: var(--accent-soft); box-shadow: inset 3px 0 0 var(--accent); }
+.lines .ln.right { background: var(--good-soft); box-shadow: inset 3px 0 0 var(--good); }
+.lines .ln.wrong { background: var(--bad-soft); box-shadow: inset 3px 0 0 var(--bad); }
+.lines .ln:disabled { cursor: default; }
+
+/* parsons */
+.built {
+  min-height: 120px; padding: 8px; border-radius: 12px;
+  background: var(--code-bg); border: 2px dashed var(--line);
+  display: flex; flex-direction: column; gap: 4px;
+}
+.built:empty::before { content: "Tap lines below in order"; color: var(--muted); padding: 8px; font-size: 14px; }
+.pool { display: flex; flex-direction: column; gap: 8px; }
+.chip {
+  display: block; width: 100%; text-align: left;
+  font-family: var(--font-code); font-size: 13px; line-height: 1.5; white-space: pre; overflow-x: auto;
+  padding: 9px 12px; border-radius: 10px;
+  background: var(--surface); color: var(--code-ink); border: 2px solid var(--line); box-shadow: 0 3px 0 var(--line);
+}
+.chip:active:not(:disabled) { transform: translateY(2px); box-shadow: 0 1px 0 var(--line); }
+.built .chip { box-shadow: none; padding: 5px 10px; border-color: transparent; background: var(--surface); }
+.built.right .chip { background: var(--good-soft); }
+.built.wrong .chip { background: var(--bad-soft); }
+.chip:disabled { cursor: default; }
+
+/* compare */
+.versions { display: flex; flex-direction: column; gap: 12px; }
+.version-label { font-weight: 800; font-size: 13px; letter-spacing: 0.1em; color: var(--muted); margin-bottom: 4px; }
+
+/* footer + feedback */
+.lesson-foot { flex: none; border-top: 1.5px solid var(--line); background: var(--bg); padding: 14px 16px calc(14px + env(safe-area-inset-bottom, 0px)); }
+.lesson-foot > div { max-width: 640px; margin: 0 auto; display: flex; flex-direction: column; gap: 12px; }
+.lesson-foot.is-good { background: var(--good-soft); border-color: transparent; }
+.lesson-foot.is-bad { background: var(--bad-soft); border-color: transparent; }
+.fb-head { display: flex; align-items: center; gap: 10px; font-family: var(--font-display); font-size: 22px; font-weight: 800; }
+.fb-head svg { width: 30px; height: 30px; }
+.is-good .fb-head { color: var(--good); }
+.is-bad .fb-head { color: var(--bad); }
+.fb-text { font-size: 15px; max-height: 34vh; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; }
+.fb-text .code { font-size: 12px; }
+.fb-answer { font-weight: 700; }
+
+/* lesson complete */
+.done-screen { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 18px; padding: 24px 16px; text-align: center; }
+.done-screen h1 { font-size: 34px; letter-spacing: -0.02em; }
+.done-screen .medal { width: 96px; height: 96px; border-radius: 50%; display: grid; place-items: center; background: var(--gold); color: #fff; box-shadow: 0 7px 0 var(--gold-deep); }
+.done-screen .medal svg { width: 52px; height: 52px; }
+.done-screen .medal.failed { background: var(--raised); color: var(--muted); box-shadow: 0 7px 0 var(--raised-deep); }
+.stats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; width: 100%; max-width: 420px; }
+.stat { border-radius: 14px; border: 2px solid var(--line); background: var(--surface); padding: 10px 6px; }
+.stat b { display: block; font-family: var(--font-display); font-size: 24px; font-variant-numeric: tabular-nums; }
+.stat span { font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+.stat.xp b { color: var(--gold); }
+.stat.acc b { color: var(--good); }
+.stat.streak b { color: var(--gold); }
+.done-actions { width: 100%; max-width: 420px; display: flex; flex-direction: column; gap: 12px; }
+
+/* ------------------------------------------------------------ review / guide / me */
+.page-title { font-size: 30px; letter-spacing: -0.02em; margin-block: 4px 6px; }
+.page-sub { color: var(--muted); margin-bottom: 18px; }
+.panel { background: var(--surface); border: 1.5px solid var(--line); border-radius: var(--radius); padding: 16px; margin-bottom: 16px; display: flex; flex-direction: column; gap: 12px; }
+.panel h2 { font-size: 20px; }
+.panel p { color: var(--muted); }
+.big-num { font-family: var(--font-display); font-size: 44px; font-weight: 800; line-height: 1; font-variant-numeric: tabular-nums; }
+.big-num small { font-family: var(--font-body); font-size: 15px; font-weight: 400; color: var(--muted); margin-left: 6px; }
+.boxes { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 6px; align-items: end; height: 80px; }
+.boxes div { border-radius: 6px 6px 2px 2px; background: var(--accent); min-height: 4px; }
+.boxes-labels { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 6px; font-size: 11px; color: var(--muted); text-align: center; font-variant-numeric: tabular-nums; }
+
+.guide-tabs { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 4px; margin-bottom: 16px; }
+.guide-tabs button { flex: none; border: 2px solid var(--line); background: var(--surface); border-radius: 999px; padding: 8px 14px; font-weight: 700; }
+.guide-tabs button[aria-pressed="true"] { border-color: var(--accent); color: var(--accent); background: var(--accent-soft); }
+.variant { border-top: 1.5px solid var(--line); padding-top: 12px; display: flex; flex-direction: column; gap: 4px; }
+.variant:first-of-type { border-top: 0; padding-top: 0; }
+.variant strong { font-size: 16px; }
+.variant .when { color: var(--muted); font-size: 14px; }
+.variant .how { font-size: 15px; }
+.variant .how code, .variant .when code { font-size: 0.86em; padding: 1px 5px; border-radius: 6px; background: var(--code-bg); color: var(--code-ink); overflow-wrap: anywhere; }
+.when-label { font-size: 11px; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); margin-right: 6px; }
+
+.stat-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+.goal-picks { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; }
+.goal-picks button { border: 2px solid var(--line); background: var(--surface); border-radius: 12px; padding: 10px 0; font-weight: 700; font-variant-numeric: tabular-nums; }
+.goal-picks button[aria-pressed="true"] { border-color: var(--accent); color: var(--accent); background: var(--accent-soft); }
+.goal-picks small { display: block; font-weight: 400; font-size: 11px; color: var(--muted); }
+textarea.backup {
+  width: 100%; min-height: 90px; resize: vertical;
+  font-family: var(--font-code); font-size: 12px;
+  border: 2px solid var(--line); border-radius: 12px; padding: 10px;
+  background: var(--code-bg); color: var(--code-ink);
+}
+.row { display: flex; gap: 10px; flex-wrap: wrap; }
+.row > .btn { flex: 1 1 140px; }
+.note { font-size: 14px; color: var(--muted); }
+.note.ok { color: var(--good); }
+.note.err { color: var(--bad); }
+.empty { text-align: center; color: var(--muted); padding: 12px 0; }
+
+</style>
+<div id="app"></div>
+<script>window.IC_CONTENT = {"units":[{"id":"bs","title":"Binary Search","subtitle":"One template, every variant","hue":226,"guide":{"intro":"Learn one template (first True) and rephrase every variant into it. When the answer is a number, binary search the answer with a `feasible()` check.","template":"lo, hi = 0, len(nums)   # hi = fallback\nwhile lo < hi:\n    mid = (lo + hi) // 2\n    if cond(mid):\n        hi = mid\n    else:\n        lo = mid + 1\nreturn lo","variants":[{"name":"First True (core)","trigger":"smallest index where …, insert position, first bad version","how":"`while lo < hi`, True → `hi = mid`, False → `lo = mid + 1`"},{"name":"Exact match","trigger":"return index or -1","how":"core + `i < len(nums) and nums[i] == target`, or the closed-range `lo <= hi` form"},{"name":"Last True","trigger":"largest x such that …","how":"first True of the opposite question, minus 1. Writing it directly needs `mid = (lo + hi + 1) // 2`"},{"name":"On the answer","trigger":"minimize the max, min speed / capacity / days","how":"write `feasible(x)` first, `lo` = smallest possible, `hi` = surely works"},{"name":"Rotated array","trigger":"sorted then rotated","how":"question `nums[i] <= nums[-1]` finds the min; then search the right half"},{"name":"Peak","trigger":"any local maximum","how":"question `nums[i] > nums[i + 1]`, `hi = len(nums) - 1`"},{"name":"2D matrix","trigger":"rows sorted, each row after the previous","how":"treat as 1D: `r, c = divmod(i, cols)`"},{"name":"bisect module","trigger":"plain sorted list lookups, LIS, time maps","how":"`bisect_left` = first ≥ x, `bisect_right` = first > x"}],"moves":[{"name":"Make hi the fallback","body":"Start `hi` at the value to return if nothing qualifies. No `ans` variable."},{"name":"Ceiling division","body":"`(p + k - 1) // k` rounds up without floats."},{"name":"Guard impossible input first","body":"If even the largest candidate fails (bouquets: `m * k > n`), return -1 before searching."},{"name":"Largest ≤ x","body":"`a[bisect_right(a, x) - 1]`, after checking the index is ≥ 0."},{"name":"Count of x","body":"`bisect_right(a, x) - bisect_left(a, x)`"},{"name":"Window left edge","body":"K closest: search `left` in `[0, n - k]`, compare `x - arr[mid]` with `arr[mid + k] - x`."},{"name":"LIS tails","body":"Replace the first tail `>= x` (`bisect_left`), or append."}]},"levels":[{"id":"bs-l1","kind":"spot","title":"Spot it","lessons":[{"id":"bs-l1-a","title":"Signals","cards":["bs-sig-teach","bs-spot-insert","bs-spot-koko","bs-spot-window","bs-spot-twosum","bs-spot-ship","bs-spot-phrase","bs-spot-rotated","bs-spot-kth"]},{"id":"bs-l1-b","title":"The yes/no question","cards":["bs-pred-teach","bs-pred-koko","bs-pred-badver","bs-pred-sqrt","bs-pred-cannot","bs-pred-kokorange","bs-pred-shiprange","bs-pred-split"]}]},{"id":"bs-l2","kind":"template","title":"Core template","lessons":[{"id":"bs-l2-a","title":"First True","cards":["bs-core-teach","bs-core-order-lb","bs-core-cloze-while","bs-core-cloze-hi","bs-core-cloze-init","bs-core-cloze-lo","bs-core-pred1","bs-core-pred2","bs-core-bug-gt","bs-core-after"]},{"id":"bs-l2-b","title":"Using the result","cards":["bs-use-teach","bs-use-cloze-bounds","bs-use-edge","bs-use-range","bs-use-count","bs-use-overflow","bs-use-bug-hang","bs-use-order-range"]}]},{"id":"bs-l3","kind":"variants","title":"Variants","lessons":[{"id":"bs-l3-a","title":"Exact match & last True","cards":["bs-var-exact-teach","bs-var-pair","bs-var-cloze-exact","bs-var-letters","bs-var-last-teach","bs-var-order-sqrt","bs-var-bug-sqrt","bs-var-upper"]},{"id":"bs-l3-b","title":"Search the answer","cards":["bs-ans-teach","bs-ans-cloze-ceil","bs-ans-order-feasible","bs-ans-bug-lo","bs-ans-days","bs-ans-complex","bs-ans-bouquet"]},{"id":"bs-l3-c","title":"Rotated, peak, matrix","cards":["bs-rot-teach","bs-rot-pred","bs-rot-cloze-cmp","bs-rot-search-teach","bs-rot-cloze-half","bs-peak","bs-peak-order","bs-peak-safe","bs-matrix-cloze"]}]},{"id":"bs-l4","kind":"moves","title":"Moves","lessons":[{"id":"bs-l4-a","title":"Python's bisect","cards":["bs-bisect-teach","bs-bis-p1","bs-bis-p2","bs-bis-p3","bs-bis-p4","bs-bis-p5","bs-bis-count","bs-bis-floor","bs-bis-timemap","bs-bis-insort","bs-bis-key"]},{"id":"bs-l4-b","title":"Clean moves","cards":["bs-moves-teach","bs-cmp-first","bs-cmp-sqrt","bs-cmp-rot","bs-lis-teach","bs-lis-cloze","bs-setup-right"]}]},{"id":"bs-l5","kind":"problems","title":"Problems","lessons":[{"id":"bs-l5-a","title":"m Bouquets","cards":["bs-run-bq-teach","bs-run-bq-pattern","bs-run-bq-range","bs-run-bq-order","bs-run-bq-guard","bs-run-bq-why-hi","bs-run-bq-complex"]},{"id":"bs-l5-b","title":"K Closest Elements","cards":["bs-run-kc-teach","bs-run-kc-pattern","bs-run-kc-range","bs-run-kc-cmp","bs-run-kc-abs","bs-run-kc-bug","bs-run-kc-bounds"]}]},{"id":"bs-l6","kind":"legendary","title":"Timed challenge","lessons":[{"id":"bs-l6-a","title":"Timed mix","sample":12,"seconds":40}]}]},{"id":"py","title":"Python Toolkit","subtitle":"Syntax you need without thinking","hue":168,"guide":{"intro":"The standard-library pieces that come up in almost every problem, and the traps that cause silent bugs.","template":"from collections import defaultdict, Counter, deque\nfrom heapq import heappush, heappop, heapify\nfrom bisect import bisect_left, bisect_right\nfrom functools import cache\n\ngraph = defaultdict(list)\ncount = Counter(s)\nq = deque([start])\ngrid = [[0] * cols for _ in range(rows)]","variants":[],"moves":[{"name":"Max-heap","body":"Push `-x` or `(-priority, i, item)`."},{"name":"Multi-key sort","body":"`key=lambda p: (p[0], -p[1])`"},{"name":"Safe 2D grid","body":"`[[0] * cols for _ in range(rows)]`"},{"name":"Copy on save","body":"`res.append(path[:])`"},{"name":"Transpose","body":"`list(zip(*grid))`"},{"name":"Letter index","body":"`ord(ch) - ord('a')`"},{"name":"Truncating division","body":"`int(a / b)`, not `a // b`, for negatives."}]},"levels":[{"id":"py-l1","kind":"template","title":"Maps & counters","lessons":[{"id":"py-l1-a","title":"dict, defaultdict, Counter","cards":["py-dict-teach","py-counter-most","py-dd-insert","py-counter-missing","py-counter-eq","py-anagram-key","py-dict-order","py-dict-zip","py-dd-cloze"]}]},{"id":"py-l2","kind":"variants","title":"Sort, heap, deque","lessons":[{"id":"py-l2-a","title":"Ordering things","cards":["py-sort-teach","py-sort-len","py-sort-tuple","py-sort-none","py-heap-pop","py-maxheap","py-heap-tie","py-deque"]}]},{"id":"py-l3","kind":"moves","title":"Traps","lessons":[{"id":"py-l3-a","title":"Silent bugs","cards":["py-traps-teach","py-grid-alias","py-floordiv","py-path-copy","py-zip-star","py-ord","py-divmod","py-enumerate","py-inf"]}]},{"id":"py-l4","kind":"legendary","title":"Timed challenge","lessons":[{"id":"py-l4-a","title":"Timed mix","sample":10,"seconds":25}]}]}],"cards":{"bs-sig-teach":{"id":"bs-sig-teach","type":"teach","title":"When binary search is on the table","body":"Look for one of these signals:\n- The input is **sorted**, or sorted then rotated.\n- The question asks for the **minimum X that works** or the **maximum X that still works**.\n- Checking one candidate answer is easy, and if X works, every bigger X works too.\n- The constraints demand `O(log n)`, or the answer range is huge, like `1..10^9`.","code":"","tests":"","unit":"bs"},"bs-spot-insert":{"id":"bs-spot-insert","type":"mcq","prompt":"Sorted array `nums` and a `target`. Return the index of `target`, or where it would be inserted to keep `nums` sorted.","code":"","options":["Binary search","Two pointers","Hash map","Sliding window"],"mono":false,"explain":"Sorted input plus *where would it go* is the textbook signal. The answer is the first index with `nums[i] >= target`.","run":"","unit":"bs"},"bs-spot-koko":{"id":"bs-spot-koko","type":"mcq","prompt":"Koko has piles of bananas and `h` hours. Each hour she eats up to `k` bananas from one pile. Find the minimum `k` that lets her finish in time.","code":"","options":["Binary search on the answer","Greedy: sort the piles","Heap of pile sizes","Dynamic programming"],"mono":false,"explain":"*Minimum k that works*, and if `k` works then `k + 1` works too. Search over values of `k`, not over the array. Checking one `k` is a simple O(n) loop.","run":"","unit":"bs"},"bs-spot-window":{"id":"bs-spot-window","type":"mcq","prompt":"Find the length of the longest substring without repeating characters.","code":"","options":["Sliding window","Binary search","Binary search on the answer","Heap"],"mono":false,"explain":"Contiguous + longest valid → sliding window. You *could* binary search the length, but the window solves it in one O(n) pass. Binary search is the wrong first instinct here.","run":"","unit":"bs"},"bs-spot-twosum":{"id":"bs-spot-twosum","type":"mcq","prompt":"Unsorted array. Return the indices of two numbers that add up to `target`.","code":"","options":["Hash map of value → index","Binary search","Sort, then binary search each element","Sliding window"],"mono":false,"explain":"Unsorted, and you need original indices. Sorting loses the indices and costs O(n log n). One pass with a hash map is O(n).","run":"","unit":"bs"},"bs-spot-ship":{"id":"bs-spot-ship","type":"mcq","prompt":"Packages with given weights must ship in order within `days` days. Find the least ship capacity that works.","code":"","options":["Binary search on the answer","Greedy","Prefix sums","Two pointers"],"mono":false,"explain":"Same shape as Koko: the minimum capacity that works, and any bigger capacity also works. Greedy is used *inside* the check, not as the whole solution.","run":"","unit":"bs"},"bs-spot-phrase":{"id":"bs-spot-phrase","type":"mcq","prompt":"Which phrase is the strongest hint for binary search on the answer?","code":"","options":["\"minimize the largest ...\"","\"longest contiguous subarray\"","\"all possible combinations\"","\"shortest path in a grid\""],"mono":false,"explain":"*Minimize the maximum* and *maximize the minimum* almost always mean: guess the answer, check it greedily, binary search the guess.","run":"","unit":"bs"},"bs-spot-rotated":{"id":"bs-spot-rotated","type":"mcq","prompt":"A sorted array was rotated at an unknown index, like `[4,5,6,7,0,1,2]`. Find a target in `O(log n)`.","code":"","options":["Binary search (modified)","Linear scan","Hash set","Two pointers"],"mono":false,"explain":"`O(log n)` in the requirement is a direct tell. Rotation breaks plain sortedness, but enough order is left to discard half each step.","run":"","unit":"bs"},"bs-spot-kth":{"id":"bs-spot-kth","type":"mcq","prompt":"Find the k-th largest element in an unsorted array.","code":"","options":["Heap of size k","Binary search on the index","Two pointers","Prefix sums"],"mono":false,"explain":"Unsorted + top-k → heap (or quickselect). Binary search needs sorted data or a yes/no check that flips once.","run":"","unit":"bs"},"bs-pred-teach":{"id":"bs-pred-teach","type":"teach","title":"Every binary search is a yes/no question","body":"Pick a question `cond(x)` whose answer flips **once** as `x` grows:\n\n`F F F F T T T`\n\nBinary search finds the **first T** in `O(log n)` checks. Choosing the question is most of the work. The code is the same every time.","code":"","tests":"","unit":"bs"},"bs-pred-koko":{"id":"bs-pred-koko","type":"mcq","prompt":"Koko: as speed `k` grows, which question flips from False to True exactly once?","code":"","options":["Can she finish within `h` hours at speed `k`?","Does she finish in exactly `h` hours?","Is `k` bigger than the largest pile?","Does `k` divide the total?"],"mono":false,"explain":"Eating faster never finishes later, so *can finish in time* goes `F F F T T T`. *Exactly h hours* can be True for a stretch and then False again.","run":"","unit":"bs"},"bs-pred-badver":{"id":"bs-pred-badver","type":"mcq","prompt":"`isBadVersion(v)`: once a version is bad, every later version is bad. Over versions `1..n` its answers look like:","code":"","options":["`F F F T T T`","`T T T F F F`","`F T F T F T`","`T F F F F F`"],"mono":false,"explain":"First bad version = first True. This is the core template with no changes at all.","run":"","unit":"bs"},"bs-pred-sqrt":{"id":"bs-pred-sqrt","type":"mcq","prompt":"Floor of `sqrt(x)` is the **largest** `k` with `k*k <= x`. Which question gives you a *first True* instead?","code":"","options":["`k*k > x`","`k*k <= x`","`k*k == x`","`k > x // 2`"],"mono":false,"explain":"`k*k > x` goes `F F F T T T`. Its first True is one past the answer, so return `first_true - 1`. Turning *largest* into *first True* lets you keep one template.","run":"","unit":"bs"},"bs-pred-cannot":{"id":"bs-pred-cannot","type":"mcq","prompt":"Which one can **not** be solved with binary search?","code":"","options":["Find any index where `nums[i] == nums[i+1]` in an unsorted array","Find the minimum of a rotated sorted array","Find the first version that fails a test","Find the smallest divisor so the sum of rounded-up quotients is ≤ `threshold`"],"mono":false,"explain":"Nothing flips once: an equal pair could be anywhere, so the middle element tells you nothing about which half to keep.","run":"","unit":"bs"},"bs-pred-kokorange":{"id":"bs-pred-kokorange","type":"mcq","prompt":"Koko: which range should you search for `k`?","code":"","options":["`lo, hi = 1, max(piles)`","`lo, hi = 0, max(piles)`","`lo, hi = min(piles), max(piles)`","`lo, hi = 1, min(piles)`"],"mono":true,"explain":"Speed 0 divides by zero. At `max(piles)` every pile takes one hour, which always fits since `h >= len(piles)`. Starting at `min(piles)` is wrong: piles `[3, 3]` with `h = 4` needs `k = 2`.","run":"","unit":"bs"},"bs-pred-shiprange":{"id":"bs-pred-shiprange","type":"mcq","prompt":"Ship packages: which range should you search for the capacity?","code":"","options":["`lo, hi = max(weights), sum(weights)`","`lo, hi = 0, sum(weights)`","`lo, hi = 0, max(weights)`","`lo, hi = min(weights), max(weights)`"],"mono":true,"explain":"A ship smaller than the heaviest package can never carry it, so start there. `sum(weights)` ships everything in one day, so it always works.","run":"","unit":"bs"},"bs-pred-split":{"id":"bs-pred-split","type":"mcq","prompt":"*Split `nums` into `k` contiguous parts to minimize the largest part sum.* What should `feasible(x)` check?","code":"","options":["Can we split into at most `k` parts, each with sum ≤ `x`?","Can we split into exactly `k` parts with sum exactly `x`?","Is the sum of the `k` largest elements ≤ `x`?","Is `x` ≥ the average part sum?"],"mono":false,"explain":"Greedily fill each part until the next number would push it over `x`. If that uses ≤ `k` parts, `x` works, and so does every bigger `x`. *At most* is right because a part can always be split further.","run":"","unit":"bs"},"bs-core-teach":{"id":"bs-core-teach","type":"teach","title":"The core template: first True","body":"Memorize this one form. Four rules:\n1. `hi` starts at the answer to return if nothing is True (often `len(nums)`).\n2. `while lo < hi`, never `<=`.\n3. True → `hi = mid`. False → `lo = mid + 1`.\n4. When the loop ends, `lo == hi`, and that is the answer.","code":"lo, hi = 0, len(nums)   # hi = fallback\nwhile lo < hi:\n    mid = (lo + hi) // 2\n    if cond(mid):\n        hi = mid        # keep mid\n    else:\n        lo = mid + 1    # skip mid\nreturn lo               # lo == hi","tests":"","unit":"bs"},"bs-core-order-lb":{"id":"bs-core-order-lb","type":"order","prompt":"Build `lower_bound`: the first index with `nums[i] >= target`.","lines":["def lower_bound(nums, target):","    lo, hi = 0, len(nums)","    while lo < hi:","        mid = (lo + hi) // 2","        if nums[mid] >= target:","            hi = mid","        else:","            lo = mid + 1","    return lo"],"distractors":["    while lo <= hi:","            hi = mid - 1"],"explain":"This is `bisect_left`. `hi = len(nums)` means *if nothing is ≥ target, insert at the end*.","tests":"assert lower_bound([1, 3, 3, 5], 3) == 1\nassert lower_bound([1, 3, 3, 5], 4) == 3\nassert lower_bound([1, 3, 3, 5], 0) == 0\nassert lower_bound([1, 3, 3, 5], 9) == 4\nassert lower_bound([1, 3], 3) == 1\nassert lower_bound([], 1) == 0","setup":"","unit":"bs"},"bs-core-cloze-while":{"id":"bs-core-cloze-while","type":"cloze","prompt":"Complete the loop condition.","code":"def lower_bound(nums, target):\n    lo, hi = 0, len(nums)\n    while lo ___ hi:\n        mid = (lo + hi) // 2\n        if nums[mid] >= target:\n            hi = mid\n        else:\n            lo = mid + 1\n    return lo","options":["<","<=",">"],"mono":true,"explain":"`hi = mid` keeps `mid` in range, so the loop has to stop when `lo == hi`. With `<=` it would spin forever on that last step.","tests":"assert lower_bound([1, 3, 3, 5], 3) == 1\nassert lower_bound([1, 3, 3, 5], 4) == 3\nassert lower_bound([1, 3, 3, 5], 0) == 0\nassert lower_bound([1, 3, 3, 5], 9) == 4\nassert lower_bound([1, 3], 3) == 1\nassert lower_bound([], 1) == 0","setup":"","unit":"bs"},"bs-core-cloze-hi":{"id":"bs-core-cloze-hi","type":"cloze","prompt":"What happens to `hi` when the condition is True?","code":"def lower_bound(nums, target):\n    lo, hi = 0, len(nums)\n    while lo < hi:\n        mid = (lo + hi) // 2\n        if nums[mid] >= target:\n            hi = ___\n        else:\n            lo = mid + 1\n    return lo","options":["mid","mid - 1","mid + 1"],"mono":true,"explain":"`mid` passed the test, so it might be the answer. Keep it: `hi = mid`. `mid - 1` throws away a possible answer.","tests":"assert lower_bound([1, 3, 3, 5], 3) == 1\nassert lower_bound([1, 3, 3, 5], 4) == 3\nassert lower_bound([1, 3, 3, 5], 0) == 0\nassert lower_bound([1, 3, 3, 5], 9) == 4\nassert lower_bound([1, 3], 3) == 1\nassert lower_bound([], 1) == 0","setup":"","unit":"bs"},"bs-core-cloze-init":{"id":"bs-core-cloze-init","type":"cloze","prompt":"Where does `hi` start?","code":"def lower_bound(nums, target):\n    lo, hi = 0, ___\n    while lo < hi:\n        mid = (lo + hi) // 2\n        if nums[mid] >= target:\n            hi = mid\n        else:\n            lo = mid + 1\n    return lo","options":["len(nums)","len(nums) - 1","len(nums) + 1"],"mono":true,"explain":"`hi` is the answer when nothing qualifies. For `lower_bound` that's *insert at the end*, index `len(nums)`.","tests":"assert lower_bound([1, 3, 3, 5], 3) == 1\nassert lower_bound([1, 3, 3, 5], 4) == 3\nassert lower_bound([1, 3, 3, 5], 0) == 0\nassert lower_bound([1, 3, 3, 5], 9) == 4\nassert lower_bound([1, 3], 3) == 1\nassert lower_bound([], 1) == 0","setup":"","unit":"bs"},"bs-core-cloze-lo":{"id":"bs-core-cloze-lo","type":"cloze","prompt":"What happens to `lo` when the condition is False?","code":"def lower_bound(nums, target):\n    lo, hi = 0, len(nums)\n    while lo < hi:\n        mid = (lo + hi) // 2\n        if nums[mid] >= target:\n            hi = mid\n        else:\n            lo = ___\n    return lo","options":["mid + 1","mid","mid - 1"],"mono":true,"explain":"`mid` failed the test, so it can't be the answer. Skip past it. `lo = mid` makes no progress when `hi == lo + 1` and loops forever.","tests":"assert lower_bound([1, 3, 3, 5], 3) == 1\nassert lower_bound([1, 3, 3, 5], 4) == 3\nassert lower_bound([1, 3, 3, 5], 0) == 0\nassert lower_bound([1, 3, 3, 5], 9) == 4\nassert lower_bound([1, 3], 3) == 1\nassert lower_bound([], 1) == 0","setup":"","unit":"bs"},"bs-core-pred1":{"id":"bs-core-pred1","type":"predict","prompt":"What does the last line evaluate to?","code":"def lower_bound(nums, target):\n    lo, hi = 0, len(nums)\n    while lo < hi:\n        mid = (lo + hi) // 2\n        if nums[mid] >= target:\n            hi = mid\n        else:\n            lo = mid + 1\n    return lo","expr":"lower_bound([1, 3, 3, 5], 3)","options":["1","2","0","3"],"mono":true,"explain":"First index with `nums[i] >= 3` is index 1, the first of the two 3s.","unit":"bs"},"bs-core-pred2":{"id":"bs-core-pred2","type":"predict","prompt":"What does the last line evaluate to?","code":"def lower_bound(nums, target):\n    lo, hi = 0, len(nums)\n    while lo < hi:\n        mid = (lo + hi) // 2\n        if nums[mid] >= target:\n            hi = mid\n        else:\n            lo = mid + 1\n    return lo","expr":"lower_bound([1, 3, 3, 5], 6)","options":["4","3","-1","IndexError"],"mono":true,"explain":"Nothing is ≥ 6, so `lo` ends at the starting `hi`, which is `len(nums) == 4`. It never indexes out of range because `mid < hi` always.","unit":"bs"},"bs-core-bug-gt":{"id":"bs-core-bug-gt","type":"bug","prompt":"This should return the first index with `nums[i] >= target`. Tap the buggy line.","lines":["def lower_bound(nums, target):","    lo, hi = 0, len(nums)","    while lo < hi:","        mid = (lo + hi) // 2","        if nums[mid] > target:","            hi = mid","        else:","            lo = mid + 1","    return lo"],"line":4,"fix":"if nums[mid] >= target:","explain":"`>` finds the first element *strictly greater* than target. That's `upper_bound` (`bisect_right`), a real function, but not this one.","tests":"assert lower_bound([1, 3, 3, 5], 3) == 1\nassert lower_bound([1, 3, 3, 5], 4) == 3\nassert lower_bound([1, 3, 3, 5], 0) == 0\nassert lower_bound([1, 3, 3, 5], 9) == 4\nassert lower_bound([1, 3], 3) == 1\nassert lower_bound([], 1) == 0","setup":"","unit":"bs"},"bs-core-after":{"id":"bs-core-after","type":"mcq","prompt":"When the core loop ends, which is always true?","code":"","options":["`lo == hi`, and it may equal `len(nums)`","`lo == hi + 1`","`nums[lo] == target`","`lo < hi`"],"mono":false,"explain":"The loop stops exactly when they meet. If nothing was True, `lo` equals the starting `hi`, often `len(nums)`, so check bounds before reading `nums[lo]`.","run":"","unit":"bs"},"bs-use-teach":{"id":"bs-use-teach","type":"teach","title":"Turn lower_bound into answers","body":"One search, then a cheap check. Most *find it in a sorted array* questions are this plus one line.","code":"i = lower_bound(nums, target)\n\n# search insert position\nreturn i\n# exact search\nreturn i if i < len(nums) and nums[i] == target else -1\n# how many times target appears\nreturn lower_bound(nums, target + 1) - i","tests":"","unit":"bs"},"bs-use-cloze-bounds":{"id":"bs-use-cloze-bounds","type":"cloze","prompt":"Exact search: complete the guard.","code":"def search(nums, target):\n    i = lower_bound(nums, target)\n    return i if ___ and nums[i] == target else -1","options":["i < len(nums)","i <= len(nums)","i > 0","i >= 0"],"mono":true,"explain":"`i` can be `len(nums)` when target is bigger than everything. Check that before reading `nums[i]`. `and` short-circuits, so the second part never runs out of range.","tests":"assert search([1, 3, 5], 3) == 1\nassert search([1, 3, 5], 1) == 0\nassert search([1, 3, 5], 9) == -1\nassert search([1, 3, 5], 2) == -1\nassert search([], 2) == -1","setup":"def lower_bound(nums, target):\n    lo, hi = 0, len(nums)\n    while lo < hi:\n        mid = (lo + hi) // 2\n        if nums[mid] >= target:\n            hi = mid\n        else:\n            lo = mid + 1\n    return lo","unit":"bs"},"bs-use-edge":{"id":"bs-use-edge","type":"mcq","prompt":"Which input crashes this?","code":"def search(nums, target):\n    i = lower_bound(nums, target)\n    return i if nums[i] == target else -1","options":["`nums = [1, 2, 3]`, `target = 4`","`nums = [1, 2, 3]`, `target = 2`","`nums = [1, 2, 3]`, `target = 0`","`nums = [2, 2, 2]`, `target = 2`"],"mono":false,"explain":"Target bigger than everything → `i == len(nums)` → `IndexError`. An empty list crashes the same way.","run":"","unit":"bs"},"bs-use-range":{"id":"bs-use-range","type":"mcq","prompt":"First and last position of integer `t` in sorted `nums`. Cleanest way?","code":"","options":["`lower_bound(t)` and `lower_bound(t + 1) - 1`","`lower_bound(t)` and `lower_bound(t) + 1`","Find any match, then walk left and right","`lower_bound(t - 1)` and `lower_bound(t + 1)`"],"mono":true,"explain":"Reuse one function twice. Walking out from a match is O(n) when every element equals `t`. For non-integers use `bisect_right(nums, t) - 1` for the last position.","run":"","unit":"bs"},"bs-use-count":{"id":"bs-use-count","type":"predict","prompt":"What does the last line evaluate to?","code":"def lower_bound(nums, target):\n    lo, hi = 0, len(nums)\n    while lo < hi:\n        mid = (lo + hi) // 2\n        if nums[mid] >= target:\n            hi = mid\n        else:\n            lo = mid + 1\n    return lo","expr":"lower_bound([1, 2, 2, 2, 3], 3) - lower_bound([1, 2, 2, 2, 3], 2)","options":["3","2","4","1"],"mono":true,"explain":"`4 - 1 = 3`. The first index of the next value minus the first index of this value = how many times it appears.","unit":"bs"},"bs-use-overflow":{"id":"bs-use-overflow","type":"mcq","prompt":"Why do Java and C++ solutions write `mid = lo + (hi - lo) / 2`?","code":"","options":["`lo + hi` can overflow a 32-bit int. Python ints never overflow.","It rounds up instead of down","It's faster","It prevents infinite loops"],"mono":false,"explain":"In Python, `(lo + hi) // 2` is fine. Know the reason in case an interviewer asks.","run":"","unit":"bs"},"bs-use-bug-hang":{"id":"bs-use-bug-hang","type":"bug","prompt":"This sometimes never finishes. Tap the line that causes it.","lines":["def lower_bound(nums, target):","    lo, hi = 0, len(nums)","    while lo <= hi:","        mid = (lo + hi) // 2","        if nums[mid] >= target:","            hi = mid","        else:","            lo = mid + 1","    return lo"],"line":2,"fix":"while lo < hi:","explain":"With `<=`, when `lo == hi` the loop runs again: `mid == lo`, the condition is True, `hi = mid` changes nothing, and it spins forever. `hi = mid` must go with `lo < hi`.","tests":"assert lower_bound([1, 3, 3, 5], 3) == 1\nassert lower_bound([1, 3, 3, 5], 4) == 3\nassert lower_bound([1, 3, 3, 5], 0) == 0\nassert lower_bound([1, 3, 3, 5], 9) == 4\nassert lower_bound([1, 3], 3) == 1\nassert lower_bound([], 1) == 0","setup":"","unit":"bs"},"bs-use-order-range":{"id":"bs-use-order-range","type":"order","prompt":"Build `search_range`: first and last index of `target`, or `[-1, -1]`. `lower_bound` is already defined.","lines":["def search_range(nums, target):","    left = lower_bound(nums, target)","    if left == len(nums) or nums[left] != target:","        return [-1, -1]","    right = lower_bound(nums, target + 1) - 1","    return [left, right]"],"distractors":["    right = lower_bound(nums, target) + 1"],"explain":"Find the start, bail out if `target` isn't there, then find where the next value would start and step back one.","tests":"assert search_range([5, 7, 7, 8, 8, 10], 8) == [3, 4]\nassert search_range([5, 7, 7, 8, 8, 10], 6) == [-1, -1]\nassert search_range([], 0) == [-1, -1]\nassert search_range([1], 1) == [0, 0]\nassert search_range([2, 2], 3) == [-1, -1]","setup":"def lower_bound(nums, target):\n    lo, hi = 0, len(nums)\n    while lo < hi:\n        mid = (lo + hi) // 2\n        if nums[mid] >= target:\n            hi = mid\n        else:\n            lo = mid + 1\n    return lo","unit":"bs"},"bs-var-exact-teach":{"id":"bs-var-exact-teach","type":"teach","title":"Variant: classic exact match","body":"You'll see this in textbooks and in other people's code. Its rules are different:\n- `hi = len(nums) - 1` (inclusive) goes with `while lo <= hi`.\n- **Both** sides move past mid: `lo = mid + 1`, `hi = mid - 1`.\n\nIt only answers *is it there?*. For *first*, *last* or *where would it go*, use the core template.","code":"def search(nums, target):\n    lo, hi = 0, len(nums) - 1\n    while lo <= hi:\n        mid = (lo + hi) // 2\n        if nums[mid] == target:\n            return mid\n        if nums[mid] < target:\n            lo = mid + 1\n        else:\n            hi = mid - 1\n    return -1","tests":"","unit":"bs"},"bs-var-pair":{"id":"bs-var-pair","type":"mcq","prompt":"`hi = len(nums) - 1` with `while lo <= hi`. Which update goes with them?","code":"","options":["`hi = mid - 1`","`hi = mid`","`hi = mid + 1`","`lo = mid`"],"mono":true,"explain":"Closed range `[lo, hi]`: mid has been checked, so drop it on both sides. Mixing `<=` with `hi = mid` is the classic infinite loop.","run":"","unit":"bs"},"bs-var-cloze-exact":{"id":"bs-var-cloze-exact","type":"cloze","prompt":"Complete the classic exact-match search.","code":"def search(nums, target):\n    lo, hi = 0, len(nums) - 1\n    while lo <= hi:\n        mid = (lo + hi) // 2\n        if nums[mid] == target:\n            return mid\n        if nums[mid] < target:\n            lo = mid + 1\n        else:\n            hi = ___\n    return -1","options":["mid - 1","mid","mid + 1"],"mono":true,"explain":"In the closed-range version, `mid` was already compared, so both updates step past it.","tests":"assert search([-1, 0, 3, 5, 9, 12], 9) == 4\nassert search([-1, 0, 3, 5, 9, 12], 2) == -1\nassert search([5], 5) == 0\nassert search([], 1) == -1\nassert search([1, 3], 0) == -1","setup":"","unit":"bs"},"bs-var-letters":{"id":"bs-var-letters","type":"mcq","prompt":"*Return the smallest letter in sorted `letters` that is strictly greater than `target`, wrapping around to the first letter.* Which approach?","code":"","options":["First True of `letters[i] > target`, then `% len(letters)`","Exact match on `target`","Last True of `letters[i] <= target`","Binary search on the answer"],"mono":false,"explain":"*Smallest … greater than* = first True of `> target`, which is `bisect_right`. If nothing is greater, the index is `len(letters)`, and `% len` wraps it to 0.","run":"letters = [\"c\", \"f\", \"j\"]\nassert letters[bisect_right(letters, \"a\") % len(letters)] == \"c\"\nassert letters[bisect_right(letters, \"c\") % len(letters)] == \"f\"\nassert letters[bisect_right(letters, \"j\") % len(letters)] == \"c\"","unit":"bs"},"bs-var-last-teach":{"id":"bs-var-last-teach","type":"teach","title":"Variant: last True","body":"*Largest x such that …* is a **last True**: `T T T F F F`.\n\nDon't learn a second template. Flip the question and use the core:\nlast True = (first index where it's False) − 1.\n\nExample: floor of `sqrt(x)` = largest `k` with `k*k <= x` = (first `k` with `k*k > x`) − 1.","code":"def my_sqrt(x):\n    lo, hi = 0, x + 1\n    while lo < hi:\n        mid = (lo + hi) // 2\n        if mid * mid > x:\n            hi = mid\n        else:\n            lo = mid + 1\n    return lo - 1","tests":"for x, want in [(0, 0), (1, 1), (4, 2), (8, 2), (15, 3), (16, 4), (2147395599, 46339)]:\n    assert my_sqrt(x) == want, (x, my_sqrt(x))","unit":"bs"},"bs-var-order-sqrt":{"id":"bs-var-order-sqrt","type":"order","prompt":"Build `my_sqrt` (floor of the square root) with the core template.","lines":["def my_sqrt(x):","    lo, hi = 0, x + 1","    while lo < hi:","        mid = (lo + hi) // 2","        if mid * mid > x:","            hi = mid","        else:","            lo = mid + 1","    return lo - 1"],"distractors":["    return lo","        if mid * mid <= x:"],"explain":"`hi = x + 1` is the fallback: for `x = 0` or `1` the answer is `x` itself, so the first `k` with `k*k > x` can be `x + 1`.","tests":"for x, want in [(0, 0), (1, 1), (4, 2), (8, 2), (15, 3), (16, 4), (2147395599, 46339)]:\n    assert my_sqrt(x) == want, (x, my_sqrt(x))","setup":"","unit":"bs"},"bs-var-bug-sqrt":{"id":"bs-var-bug-sqrt","type":"bug","prompt":"Last True written directly. It hangs on `my_sqrt(8)`. Tap the line to fix.","lines":["def my_sqrt(x):","    lo, hi = 0, x","    while lo < hi:","        mid = (lo + hi) // 2","        if mid * mid <= x:","            lo = mid","        else:","            hi = mid - 1","    return lo"],"line":3,"fix":"mid = (lo + hi + 1) // 2","explain":"With `lo = mid`, mid must round **up**. Otherwise, when `hi == lo + 1`, `mid == lo`, `lo = mid` makes no progress, and it loops forever. That's easy to forget under pressure, which is why converting to first True is safer.","tests":"for x, want in [(0, 0), (1, 1), (4, 2), (8, 2), (15, 3), (16, 4), (2147395599, 46339)]:\n    assert my_sqrt(x) == want, (x, my_sqrt(x))","setup":"","unit":"bs"},"bs-var-upper":{"id":"bs-var-upper","type":"mcq","prompt":"`upper_bound`: the first index with `nums[i] > target`. Starting from the core `lower_bound`, what's the only change?","code":"","options":["`>=` becomes `>`","`hi = mid` becomes `hi = mid - 1`","`while lo < hi` becomes `while lo <= hi`","`lo = mid + 1` becomes `lo = mid`"],"mono":true,"explain":"Only the question changes. The loop never changes. That's the point of having one template.","run":"","unit":"bs"},"bs-ans-teach":{"id":"bs-ans-teach","type":"teach","title":"Variant: binary search on the answer","body":"When the answer is a number in a range (speed, capacity, days):\n1. Write `feasible(x)` first. It's usually a greedy O(n) loop.\n2. Set `lo` = smallest possible answer, `hi` = an answer that surely works.\n3. Paste the core template.\n\nHere `hi = max(piles)` always works, so it plays the role of *answer if nothing smaller works*.","code":"def min_speed(piles, h):\n    def feasible(k):\n        return sum((p + k - 1) // k for p in piles) <= h\n\n    lo, hi = 1, max(piles)\n    while lo < hi:\n        mid = (lo + hi) // 2\n        if feasible(mid):\n            hi = mid\n        else:\n            lo = mid + 1\n    return lo","tests":"assert min_speed([3, 6, 7, 11], 8) == 4\nassert min_speed([30, 11, 23, 4, 20], 5) == 30\nassert min_speed([30, 11, 23, 4, 20], 6) == 23\nassert min_speed([1], 1) == 1","unit":"bs"},"bs-ans-cloze-ceil":{"id":"bs-ans-cloze-ceil","type":"cloze","prompt":"Hours to eat all piles at speed `k`. Complete the rounding-up division.","code":"def hours_needed(piles, k):\n    return sum(___ for p in piles)","options":["(p + k - 1) // k","p // k","p / k","(p + k) // k"],"mono":true,"explain":"Integer ceiling division: `(p + k - 1) // k`. `-(-p // k)` also works. Plain `p // k` rounds down, so a pile of 3 at speed 4 would take 0 hours.","tests":"assert hours_needed([3, 6, 7, 11], 4) == 8\nassert hours_needed([4], 4) == 1\nassert hours_needed([1, 1], 3) == 2","setup":"","unit":"bs"},"bs-ans-order-feasible":{"id":"bs-ans-order-feasible","type":"order","prompt":"Build the check for *ship within `days` days*: can capacity `cap` do it?","lines":["def can_ship(weights, days, cap):","    need, load = 1, 0","    for w in weights:","        if load + w > cap:","            need += 1","            load = 0","        load += w","    return need <= days"],"distractors":["    return need == days","    need, load = 0, 0"],"explain":"Greedy: keep loading today's ship, and start a new day when the next package won't fit. Start at `need = 1` because the first day counts.","tests":"assert can_ship([1, 2, 3, 4, 5, 6, 7, 8, 9, 10], 5, 15) is True\nassert can_ship([1, 2, 3, 4, 5, 6, 7, 8, 9, 10], 5, 14) is False\nassert can_ship([3, 2, 2, 4, 1, 4], 3, 6) is True\nassert can_ship([3, 2, 2, 4, 1, 4], 3, 5) is False","setup":"","unit":"bs"},"bs-ans-bug-lo":{"id":"bs-ans-bug-lo","type":"bug","prompt":"Returns 0 for `ship_within_days([1, 2, 3], 5)`. `can_ship` is the check from before. Tap the bug.","lines":["def ship_within_days(weights, days):","    lo, hi = 0, sum(weights)","    while lo < hi:","        mid = (lo + hi) // 2","        if can_ship(weights, days, mid):","            hi = mid","        else:","            lo = mid + 1","    return lo"],"line":1,"fix":"lo, hi = max(weights), sum(weights)","explain":"`can_ship` never checks whether one package is heavier than the ship, so tiny capacities wrongly pass. Starting at `max(weights)` makes every candidate physically possible.","tests":"assert ship_within_days([1, 2, 3], 5) == 3\nassert ship_within_days([1, 2, 3, 4, 5, 6, 7, 8, 9, 10], 5) == 15\nassert ship_within_days([3, 2, 2, 4, 1, 4], 3) == 6","setup":"def can_ship(weights, days, cap):\n    need, load = 1, 0\n    for w in weights:\n        if load + w > cap:\n            need += 1\n            load = 0\n        load += w\n    return need <= days","unit":"bs"},"bs-ans-days":{"id":"bs-ans-days","type":"mcq","prompt":"In `can_ship`, why `need <= days` and not `need == days`?","code":"","options":["Finishing early is fine, and a yes must stay yes for bigger capacities","`==` would be too slow","`need` can never be less than `days`","It handles empty input"],"mono":false,"explain":"If capacity `x` ships in 3 days, it can also ship in 5 by carrying less each day. The check has to flip once: after it becomes True, it stays True as `x` grows.","run":"","unit":"bs"},"bs-ans-complex":{"id":"bs-ans-complex","type":"mcq","prompt":"Time complexity of Koko with `n` piles and largest pile `M`?","code":"","options":["`O(n log M)`","`O(log n)`","`O(n log n)`","`O(n * M)`"],"mono":false,"explain":"`log M` guesses, and each guess costs one O(n) pass over the piles.","run":"","unit":"bs"},"bs-ans-bouquet":{"id":"bs-ans-bouquet","type":"mcq","prompt":"*Flower `i` blooms on day `bloomDay[i]`. You need `m` bouquets, each made of `k` **adjacent** bloomed flowers. What's the minimum day?* What does `feasible(d)` do?","code":"","options":["Scan left to right, counting runs of flowers with `bloomDay[i] <= d`. Do the runs give `m` bouquets of `k`?","Check if `d` ≥ the `m*k`-th smallest bloom day","Sort `bloomDay`, then check the first `m*k`","Check if the sum of bloom days ≤ `d`"],"mono":false,"explain":"Adjacency matters, so you can't sort. Count consecutive bloomed flowers. Each time the count hits `k`, make a bouquet and reset. Search `d` from `min(bloomDay)` to `max(bloomDay)`.","run":"","unit":"bs"},"bs-rot-teach":{"id":"bs-rot-teach","type":"teach","title":"Variant: rotated array","body":"In `[4,5,6,7,0,1,2]`, compare each element with the **last** one:\n\n`nums[i] <= nums[-1]` → `F F F F T T T`\n\nThe first True is the minimum. Same core template, new question. `hi = len(nums) - 1` works because the last index is always True.","code":"def find_min(nums):\n    lo, hi = 0, len(nums) - 1\n    while lo < hi:\n        mid = (lo + hi) // 2\n        if nums[mid] <= nums[-1]:\n            hi = mid\n        else:\n            lo = mid + 1\n    return nums[lo]","tests":"assert find_min([3, 4, 5, 1, 2]) == 1\nassert find_min([4, 5, 6, 7, 0, 1, 2]) == 0\nassert find_min([11, 13, 15, 17]) == 11\nassert find_min([5, 1, 2, 3, 4]) == 1\nassert find_min([1]) == 1\nassert find_min([2, 1]) == 1","unit":"bs"},"bs-rot-pred":{"id":"bs-rot-pred","type":"mcq","prompt":"Which question turns a rotated sorted array into `F F F T T T`?","code":"","options":["`nums[i] <= nums[-1]`","`nums[i] <= nums[0]`","`nums[i] < nums[i - 1]`","`nums[i] == min(nums)`"],"mono":true,"explain":"Everything in the rotated tail is ≤ the last element, and everything before it is bigger. `nums[0]` breaks when the array isn't rotated at all: `[1, 2, 3]` gives `T F F`.","run":"","unit":"bs"},"bs-rot-cloze-cmp":{"id":"bs-rot-cloze-cmp","type":"cloze","prompt":"Find the minimum of a rotated sorted array.","code":"def find_min(nums):\n    lo, hi = 0, len(nums) - 1\n    while lo < hi:\n        mid = (lo + hi) // 2\n        if nums[mid] ___ nums[-1]:\n            hi = mid\n        else:\n            lo = mid + 1\n    return nums[lo]","options":["<=",">",">="],"mono":true,"explain":"Elements in the rotated tail are ≤ the last element. The minimum is the first of them.","tests":"assert find_min([3, 4, 5, 1, 2]) == 1\nassert find_min([4, 5, 6, 7, 0, 1, 2]) == 0\nassert find_min([11, 13, 15, 17]) == 11\nassert find_min([5, 1, 2, 3, 4]) == 1\nassert find_min([1]) == 1\nassert find_min([2, 1]) == 1","setup":"","unit":"bs"},"bs-rot-search-teach":{"id":"bs-rot-search-teach","type":"teach","title":"Search in a rotated array, the safe way","body":"1. Find the index of the minimum with the template you just learned.\n2. If `target <= nums[-1]` it can only be in the right half, otherwise in the left.\n3. Run a plain `bisect_left` in that half.\n\nTwo simple searches beat one clever search with six branches.","code":"def search(nums, target):\n    n = len(nums)\n    lo, hi = 0, n - 1\n    while lo < hi:                  # 1. index of the minimum\n        mid = (lo + hi) // 2\n        if nums[mid] <= nums[-1]:\n            hi = mid\n        else:\n            lo = mid + 1\n    pivot = lo\n    if target <= nums[-1]:          # 2. pick the sorted half\n        lo, hi = pivot, n\n    else:\n        lo, hi = 0, pivot\n    i = bisect_left(nums, target, lo, hi)   # 3. plain search in it\n    return i if i < n and nums[i] == target else -1","tests":"","unit":"bs"},"bs-rot-cloze-half":{"id":"bs-rot-cloze-half","type":"cloze","prompt":"Which half can contain `target`?","code":"def search(nums, target):\n    n = len(nums)\n    lo, hi = 0, n - 1\n    while lo < hi:                  # 1. index of the minimum\n        mid = (lo + hi) // 2\n        if nums[mid] <= nums[-1]:\n            hi = mid\n        else:\n            lo = mid + 1\n    pivot = lo\n    if target ___ nums[-1]:          # 2. pick the sorted half\n        lo, hi = pivot, n\n    else:\n        lo, hi = 0, pivot\n    i = bisect_left(nums, target, lo, hi)   # 3. plain search in it\n    return i if i < n and nums[i] == target else -1","options":["<=",">",">="],"mono":true,"explain":"The right half (from the pivot to the end) holds exactly the values ≤ `nums[-1]`. Everything bigger is in the left half.","tests":"for t, want in [(0, 4), (3, -1), (4, 0), (2, 6), (7, 3)]:\n    assert search([4, 5, 6, 7, 0, 1, 2], t) == want, t\nassert search([1], 0) == -1\nassert search([1], 1) == 0\nassert search([1, 3], 3) == 1\nassert search([3, 1], 3) == 0\nassert search([3, 1], 1) == 1","setup":"","unit":"bs"},"bs-peak":{"id":"bs-peak","type":"mcq","prompt":"Find a peak (bigger than both neighbours). At `mid` you see `nums[mid] < nums[mid + 1]`. Where is a peak guaranteed?","code":"","options":["To the right of `mid`","To the left of `mid`","At `mid`","You can't tell"],"mono":false,"explain":"Walking uphill to the right must hit a peak eventually, since the edge counts as −∞. So `nums[i] > nums[i + 1]` works as the question: True → `hi = mid`, False → `lo = mid + 1`.","run":"","unit":"bs"},"bs-peak-order":{"id":"bs-peak-order","type":"order","prompt":"Build `find_peak`: return the index of any peak.","lines":["def find_peak(nums):","    lo, hi = 0, len(nums) - 1","    while lo < hi:","        mid = (lo + hi) // 2","        if nums[mid] > nums[mid + 1]:","            hi = mid","        else:","            lo = mid + 1","    return lo"],"distractors":["        if nums[mid] > nums[mid - 1]:"],"explain":"The core template with the question `nums[mid] > nums[mid + 1]`. `hi = len(nums) - 1` because the last index can always be a peak.","tests":"def is_peak(nums, i):\n    left = nums[i - 1] if i > 0 else float(\"-inf\")\n    right = nums[i + 1] if i + 1 < len(nums) else float(\"-inf\")\n    return nums[i] > left and nums[i] > right\nfor arr in ([1, 2, 3, 1], [1, 2, 1, 3, 5, 6, 4], [1], [2, 1], [1, 2]):\n    assert is_peak(arr, find_peak(arr)), arr","setup":"","unit":"bs"},"bs-peak-safe":{"id":"bs-peak-safe","type":"mcq","prompt":"In `find_peak`, why can't `nums[mid + 1]` go out of range?","code":"","options":["`lo < hi` means `mid < hi <= len(nums) - 1`","Python allows `nums[len(nums)]`","`mid` is always 0","Peaks are always in the middle"],"mono":false,"explain":"`mid` rounds down and the loop only runs while `lo < hi`, so `mid` is always strictly below `hi`.","run":"","unit":"bs"},"bs-matrix-cloze":{"id":"bs-matrix-cloze","type":"cloze","prompt":"Search a matrix whose rows are sorted and each row starts after the previous one ends.","code":"def search_matrix(matrix, target):\n    rows, cols = len(matrix), len(matrix[0])\n    lo, hi = 0, rows * cols\n    while lo < hi:\n        mid = (lo + hi) // 2\n        r, c = divmod(mid, ___)\n        if matrix[r][c] >= target:\n            hi = mid\n        else:\n            lo = mid + 1\n    if lo == rows * cols:\n        return False\n    return matrix[lo // cols][lo % cols] == target","options":["cols","rows","rows * cols"],"mono":true,"explain":"Read row by row, the matrix is one sorted list of length `rows * cols`. Index `i` lives at row `i // cols`, column `i % cols`.","tests":"m = [[1, 3, 5, 7], [10, 11, 16, 20], [23, 30, 34, 60]]\nassert search_matrix(m, 3) is True\nassert search_matrix(m, 13) is False\nassert search_matrix(m, 60) is True\nassert search_matrix(m, 61) is False\nassert search_matrix([[1]], 1) is True\nassert search_matrix([[1, 3]], 3) is True\nassert search_matrix([[1], [3]], 3) is True","setup":"","unit":"bs"},"bs-bisect-teach":{"id":"bs-bisect-teach","type":"teach","title":"Python's `bisect` module","body":"`bisect_left` is the core template with `>=`. `bisect_right` is the same with `>`.\n\nUsing them in an interview is fine, and faster and safer than writing the loop. Say *\"this is lower_bound\"* so they know you understand what it does.","code":"from bisect import bisect_left, bisect_right, insort\n\na = [1, 2, 2, 2, 5]\nbisect_left(a, 2)     # 1  first index with a[i] >= 2\nbisect_right(a, 2)    # 4  first index with a[i] > 2\nbisect_left(a, 2, 0, 3)   # search only a[0:3]\ninsort(a, 3)          # a == [1, 2, 2, 2, 3, 5]","tests":"assert bisect_left([1, 2, 2, 2, 5], 2) == 1\nassert bisect_right([1, 2, 2, 2, 5], 2) == 4\nassert a == [1, 2, 2, 2, 3, 5]","unit":"bs"},"bs-bis-p1":{"id":"bs-bis-p1","type":"predict","prompt":"What does the last line evaluate to?","code":"a = [1, 2, 2, 2, 5]","expr":"bisect_left(a, 2)","options":["1","0","3","4"],"mono":true,"explain":"First index with `a[i] >= 2`.","unit":"bs"},"bs-bis-p2":{"id":"bs-bis-p2","type":"predict","prompt":"What does the last line evaluate to?","code":"a = [1, 2, 2, 2, 5]","expr":"bisect_right(a, 2)","options":["4","3","5","1"],"mono":true,"explain":"First index with `a[i] > 2`, which is just past the last 2.","unit":"bs"},"bs-bis-p3":{"id":"bs-bis-p3","type":"predict","prompt":"What does the last line evaluate to?","code":"a = [1, 2, 2, 2, 5]","expr":"bisect_left(a, 4)","options":["4","3","5","-1"],"mono":true,"explain":"4 isn't there. It would be inserted before the 5, at index 4.","unit":"bs"},"bs-bis-p4":{"id":"bs-bis-p4","type":"predict","prompt":"What does the last line evaluate to?","code":"a = [1, 2, 2, 2, 5]","expr":"bisect_right(a, 2) - bisect_left(a, 2)","options":["3","2","4","1"],"mono":true,"explain":"Right minus left = how many times the value appears.","unit":"bs"},"bs-bis-p5":{"id":"bs-bis-p5","type":"predict","prompt":"What does the last line evaluate to?","code":"a = [10, 20, 30]","expr":"bisect_right(a, 5)","options":["0","-1","1","None"],"mono":true,"explain":"Everything is bigger than 5, so it would be inserted at the front. `bisect` never returns -1.","unit":"bs"},"bs-bis-count":{"id":"bs-bis-count","type":"mcq","prompt":"In sorted `a`, how many elements are **strictly less** than `x`?","code":"","options":["`bisect_left(a, x)`","`bisect_right(a, x)`","`bisect_left(a, x) - 1`","`len(a) - bisect_left(a, x)`"],"mono":true,"explain":"`bisect_left` is the first index with `a[i] >= x`, so everything before it is `< x`. For `<= x`, use `bisect_right`.","run":"a = [1, 3, 3, 5]\nassert bisect_left(a, 3) == 1\nassert bisect_right(a, 3) == 3","unit":"bs"},"bs-bis-floor":{"id":"bs-bis-floor","type":"mcq","prompt":"Largest element `<= x` in sorted `a` (assume one exists)?","code":"","options":["`a[bisect_right(a, x) - 1]`","`a[bisect_left(a, x) - 1]`","`a[bisect_left(a, x)]`","`a[bisect_right(a, x)]`"],"mono":true,"explain":"`bisect_right` lands just past every element `<= x`, so step back one. `bisect_left - 1` skips an element equal to `x`.","run":"a = [1, 3, 3, 5]\nassert a[bisect_right(a, 3) - 1] == 3\nassert a[bisect_right(a, 4) - 1] == 3\nassert a[bisect_left(a, 3) - 1] == 1","unit":"bs"},"bs-bis-timemap":{"id":"bs-bis-timemap","type":"cloze","prompt":"Time-based key-value store. `get` returns the value with the largest timestamp `<= timestamp`. Timestamps arrive in increasing order.","code":"class TimeMap:\n    def __init__(self):\n        self.times = defaultdict(list)\n        self.values = defaultdict(list)\n\n    def set(self, key, value, timestamp):\n        self.times[key].append(timestamp)\n        self.values[key].append(value)\n\n    def get(self, key, timestamp):\n        i = ___\n        return self.values[key][i] if i >= 0 else \"\"","options":["bisect_right(self.times[key], timestamp) - 1","bisect_left(self.times[key], timestamp) - 1","bisect_left(self.times[key], timestamp)"],"mono":true,"explain":"*Largest ≤ t* = `bisect_right(...) - 1`. The lists stay sorted because timestamps only increase, so no sorting is needed. Keeping times and values in separate lists means you never compare tuples.","tests":"tm = TimeMap()\ntm.set(\"foo\", \"bar\", 1)\nassert tm.get(\"foo\", 1) == \"bar\"\nassert tm.get(\"foo\", 3) == \"bar\"\ntm.set(\"foo\", \"bar2\", 4)\nassert tm.get(\"foo\", 4) == \"bar2\"\nassert tm.get(\"foo\", 5) == \"bar2\"\nassert tm.get(\"foo\", 0) == \"\"\nassert tm.get(\"nope\", 1) == \"\"","setup":"","unit":"bs"},"bs-bis-insort":{"id":"bs-bis-insort","type":"mcq","prompt":"`insort(a, x)` on a Python list costs:","code":"","options":["`O(n)`: the search is `O(log n)`, but inserting shifts elements","`O(log n)`","`O(1)`","`O(n log n)`"],"mono":false,"explain":"Fine for small inputs. Calling it n times is O(n²). Say so, or use a heap if you only need the min or max.","run":"","unit":"bs"},"bs-bis-key":{"id":"bs-bis-key","type":"predict","prompt":"What does the last line evaluate to?","code":"intervals = [[1, 2], [3, 5], [6, 8]]","expr":"bisect_left(intervals, 4, key=lambda iv: iv[0])","options":["2","1","3","TypeError"],"mono":true,"explain":"Since Python 3.10, `key=` is applied to the list elements, not to `x`. On older versions, build `starts = [s for s, _ in intervals]` and search that.","unit":"bs"},"bs-moves-teach":{"id":"bs-moves-teach","type":"teach","title":"Moves that keep binary search clean","body":"- **Turn it into first True.** Last True, exact match, rotated, peak: rephrase the question so one template covers all of them.\n- **Make `hi` the fallback.** Set `hi` to what you'd return if nothing qualifies. Then you need no `ans = -1` variable.\n- **Write `feasible()` first.** In search on the answer, the check is the real problem. The loop is copy-paste.\n- **Use `bisect` on plain sorted lists.** Less code, fewer off-by-ones.","code":"","tests":"","unit":"bs"},"bs-cmp-first":{"id":"bs-cmp-first","type":"compare","prompt":"Both return the first index of `target`, or -1. Which would you rather write in an interview?","a":"def first_index(nums, target):\n    lo, hi = 0, len(nums) - 1\n    ans = -1\n    while lo <= hi:\n        mid = (lo + hi) // 2\n        if nums[mid] == target:\n            ans = mid\n            hi = mid - 1\n        elif nums[mid] < target:\n            lo = mid + 1\n        else:\n            hi = mid - 1\n    return ans","b":"def first_index(nums, target):\n    i = bisect_left(nums, target)\n    if i < len(nums) and nums[i] == target:\n        return i\n    return -1","answer":"b","explain":"B is one library call plus one bounds check. A has three branches, an `ans` variable and a closed range: three places for an off-by-one. Both are O(log n).","tests":"assert first_index([5, 7, 7, 8, 8, 10], 8) == 3\nassert first_index([5, 7, 7, 8, 8, 10], 6) == -1\nassert first_index([], 1) == -1\nassert first_index([2, 2, 2], 2) == 0","setup":"","unit":"bs"},"bs-cmp-sqrt":{"id":"bs-cmp-sqrt","type":"compare","prompt":"Both compute the floor of `sqrt(x)`. Which is safer to write from memory?","a":"def my_sqrt(x):\n    lo, hi = 0, x\n    while lo < hi:\n        mid = (lo + hi + 1) // 2\n        if mid * mid <= x:\n            lo = mid\n        else:\n            hi = mid - 1\n    return lo","b":"def my_sqrt(x):\n    lo, hi = 0, x + 1\n    while lo < hi:\n        mid = (lo + hi) // 2\n        if mid * mid > x:\n            hi = mid\n        else:\n            lo = mid + 1\n    return lo - 1","answer":"b","explain":"B is the core template you already trust, plus `- 1`. A only works because mid rounds up. Forget the `+ 1` and it hangs.","tests":"for x, want in [(0, 0), (1, 1), (4, 2), (8, 2), (15, 3), (16, 4), (2147395599, 46339)]:\n    assert my_sqrt(x) == want, (x, my_sqrt(x))","setup":"","unit":"bs"},"bs-cmp-rot":{"id":"bs-cmp-rot","type":"compare","prompt":"Both find the minimum of a rotated sorted array. Which is cleaner?","a":"def find_min(nums):\n    lo, hi = 0, len(nums) - 1\n    if nums[lo] <= nums[hi]:\n        return nums[lo]\n    while lo <= hi:\n        mid = (lo + hi) // 2\n        if mid > 0 and nums[mid] < nums[mid - 1]:\n            return nums[mid]\n        if nums[mid] >= nums[0]:\n            lo = mid + 1\n        else:\n            hi = mid - 1\n    return nums[lo]","b":"def find_min(nums):\n    lo, hi = 0, len(nums) - 1\n    while lo < hi:\n        mid = (lo + hi) // 2\n        if nums[mid] <= nums[-1]:\n            hi = mid\n        else:\n            lo = mid + 1\n    return nums[lo]","answer":"b","explain":"Same speed. A needs an early return, a neighbour check with a bounds guard, and two different comparisons. B asks one question (`<= nums[-1]`) and has no special cases.","tests":"assert find_min([3, 4, 5, 1, 2]) == 1\nassert find_min([4, 5, 6, 7, 0, 1, 2]) == 0\nassert find_min([11, 13, 15, 17]) == 11\nassert find_min([5, 1, 2, 3, 4]) == 1\nassert find_min([1]) == 1\nassert find_min([2, 1]) == 1","setup":"","unit":"bs"},"bs-lis-teach":{"id":"bs-lis-teach","type":"teach","title":"Move: longest increasing subsequence with bisect","body":"`tails[i]` = the smallest tail of any increasing subsequence of length `i + 1`.\n\nFor each `x`, replace the first tail `>= x`, or append if there is none. The answer is `len(tails)`. That's O(n log n) instead of the O(n²) DP.","code":"def length_of_lis(nums):\n    tails = []\n    for x in nums:\n        i = bisect_left(tails, x)\n        if i == len(tails):\n            tails.append(x)\n        else:\n            tails[i] = x\n    return len(tails)","tests":"assert length_of_lis([10, 9, 2, 5, 3, 7, 101, 18]) == 4\nassert length_of_lis([0, 1, 0, 3, 2, 3]) == 4\nassert length_of_lis([7, 7, 7, 7]) == 1\nassert length_of_lis([]) == 0","unit":"bs"},"bs-lis-cloze":{"id":"bs-lis-cloze","type":"cloze","prompt":"Complete the O(n log n) longest *strictly* increasing subsequence.","code":"def length_of_lis(nums):\n    tails = []\n    for x in nums:\n        i = ___(tails, x)\n        if i == len(tails):\n            tails.append(x)\n        else:\n            tails[i] = x\n    return len(tails)","options":["bisect_left","bisect_right"],"mono":true,"explain":"Strictly increasing: an equal value must replace a tail, not extend it. With `[7, 7]`, `bisect_right` would append the second 7 and report length 2.","tests":"assert length_of_lis([10, 9, 2, 5, 3, 7, 101, 18]) == 4\nassert length_of_lis([0, 1, 0, 3, 2, 3]) == 4\nassert length_of_lis([7, 7, 7, 7]) == 1\nassert length_of_lis([]) == 0","setup":"","unit":"bs"},"bs-setup-right":{"id":"bs-setup-right","type":"mcq","prompt":"*For each interval, find the interval with the smallest start ≥ its end. Return its index or -1.* What do you build before the main loop?","code":"","options":["`starts = sorted((s, i) for i, (s, e) in enumerate(intervals))`","A heap of ends","A dict from start to end","A prefix-sum array of starts"],"mono":true,"explain":"Sort the starts but keep each original index in the tuple. Then for each end, `j = bisect_left(starts, (end,))`. The 1-tuple `(end,)` sorts before any `(end, i)`, so an equal start is found.","run":"intervals = [[3, 4], [2, 3], [1, 2]]\nstarts = sorted((s, i) for i, (s, e) in enumerate(intervals))\nres = []\nfor s, e in intervals:\n    j = bisect_left(starts, (e,))\n    res.append(starts[j][1] if j < len(starts) else -1)\nassert res == [-1, 0, 1]","unit":"bs"},"bs-run-bq-teach":{"id":"bs-run-bq-teach","type":"teach","title":"Full run: Minimum Days to Make m Bouquets","body":"`bloomDay[i]` is the day flower `i` blooms. A bouquet needs `k` **adjacent** bloomed flowers. Return the minimum day to make `m` bouquets, or -1 if it's impossible.\n\nWork through it step by step: pattern → range → check → edge case → full solution.","code":"","tests":"","unit":"bs"},"bs-run-bq-pattern":{"id":"bs-run-bq-pattern","type":"mcq","prompt":"What's the pattern?","code":"","options":["Binary search on the day","Sort bloom days, take the first `m*k`","Sliding window of size `k`","Heap of bloom days"],"mono":false,"explain":"*Minimum day such that it's possible*, and if day `d` works then any later day works too. Sorting is out because adjacency matters.","run":"","unit":"bs"},"bs-run-bq-range":{"id":"bs-run-bq-range","type":"mcq","prompt":"Search range for the day?","code":"","options":["`lo, hi = min(bloom_day), max(bloom_day)`","`lo, hi = 0, len(bloom_day)`","`lo, hi = 1, sum(bloom_day)`","`lo, hi = 0, m * k`"],"mono":true,"explain":"Before the first bloom nothing is possible, and by the last bloom every flower is out. The answer is always one of the bloom days.","run":"","unit":"bs"},"bs-run-bq-order":{"id":"bs-run-bq-order","type":"order","prompt":"Build `can_make`: by day `day`, can you make `m` bouquets?","lines":["def can_make(bloom_day, m, k, day):","    bouquets = run = 0","    for b in bloom_day:","        if b <= day:","            run += 1","            if run == k:","                bouquets += 1","                run = 0","        else:","            run = 0","    return bouquets >= m"],"distractors":["    return bouquets == m"],"explain":"Count the current run of bloomed flowers. A gap resets it. Each time the run reaches `k`, take a bouquet and start a new run.","tests":"assert can_make([1, 10, 3, 10, 2], 3, 1, 3) is True\nassert can_make([1, 10, 3, 10, 2], 3, 1, 2) is False\nassert can_make([7, 7, 7, 7, 12, 7, 7], 2, 3, 12) is True\nassert can_make([7, 7, 7, 7, 12, 7, 7], 2, 3, 11) is False","setup":"","unit":"bs"},"bs-run-bq-guard":{"id":"bs-run-bq-guard","type":"cloze","prompt":"When is it impossible no matter how long you wait?","code":"def min_days(bloom_day, m, k):\n    if ___:\n        return -1\n    lo, hi = min(bloom_day), max(bloom_day)\n    while lo < hi:\n        mid = (lo + hi) // 2\n        if can_make(bloom_day, m, k, mid):\n            hi = mid\n        else:\n            lo = mid + 1\n    return lo","options":["m * k > len(bloom_day)","m * k >= len(bloom_day)","m > len(bloom_day)"],"mono":true,"explain":"You need `m * k` flowers in total. If there aren't that many, even the last day fails. Without this guard the template would return `max(bloom_day)` for an impossible input.","tests":"assert min_days([1, 10, 3, 10, 2], 3, 1) == 3\nassert min_days([1, 10, 3, 10, 2], 3, 2) == -1\nassert min_days([7, 7, 7, 7, 12, 7, 7], 2, 3) == 12\nassert min_days([5], 1, 1) == 5","setup":"def can_make(bloom_day, m, k, day):\n    bouquets = run = 0\n    for b in bloom_day:\n        if b <= day:\n            run += 1\n            if run == k:\n                bouquets += 1\n                run = 0\n        else:\n            run = 0\n    return bouquets >= m","unit":"bs"},"bs-run-bq-why-hi":{"id":"bs-run-bq-why-hi","type":"mcq","prompt":"Why is `hi = max(bloom_day)` safe (no `+ 1`) once the guard passed?","code":"","options":["With enough flowers, the last bloom day always works, so the answer is never above it","`max` already adds one","The loop never reads `hi`","It isn't safe, it's a bug"],"mono":false,"explain":"`hi` must be an answer that surely works. After the guard, every flower blooming means `m * k` flowers are out, and adjacent runs cover them all.","run":"","unit":"bs"},"bs-run-bq-complex":{"id":"bs-run-bq-complex","type":"mcq","prompt":"Time complexity with `n` flowers and bloom days up to `D`?","code":"","options":["`O(n log D)`","`O(n log n)`","`O(D)`","`O(n * D)`"],"mono":false,"explain":"`log D` guesses × one O(n) scan each.","run":"","unit":"bs"},"bs-run-kc-teach":{"id":"bs-run-kc-teach","type":"teach","title":"Full run: Find K Closest Elements","body":"Sorted `arr`, integers `k` and `x`. Return the `k` elements closest to `x`, in sorted order. On a tie, the smaller element wins.\n\nThe trick: the answer is a **window** `arr[left:left + k]`. Binary search for `left`.","code":"","tests":"","unit":"bs"},"bs-run-kc-pattern":{"id":"bs-run-kc-pattern","type":"mcq","prompt":"Which approach is fastest?","code":"","options":["Binary search for the window's left edge","Max-heap of size `k` by distance","Sort by distance to `x`","Two pointers shrinking from both ends"],"mono":false,"explain":"All four are correct. Binary search is `O(log(n - k) + k)`. Shrinking two pointers is `O(n)`, the heap `O(n log k)`, sorting `O(n log n)`.","run":"","unit":"bs"},"bs-run-kc-range":{"id":"bs-run-kc-range","type":"mcq","prompt":"Range for the left edge?","code":"","options":["`lo, hi = 0, len(arr) - k`","`lo, hi = 0, len(arr)`","`lo, hi = 0, len(arr) - 1`","`lo, hi = 0, k`"],"mono":true,"explain":"The window must fit: `left + k <= len(arr)`, so the last valid start is `len(arr) - k`, which is also the fallback answer.","run":"","unit":"bs"},"bs-run-kc-cmp":{"id":"bs-run-kc-cmp","type":"cloze","prompt":"Compare the window starting at `mid` with the one starting at `mid + 1`.","code":"def find_closest_elements(arr, k, x):\n    lo, hi = 0, len(arr) - k\n    while lo < hi:\n        mid = (lo + hi) // 2\n        if x - arr[mid] ___ arr[mid + k] - x:\n            hi = mid\n        else:\n            lo = mid + 1\n    return arr[lo:lo + k]","options":["<=",">","<"],"mono":true,"explain":"The two windows differ only in `arr[mid]` vs `arr[mid + k]`. Keep the left one when `arr[mid]` is at least as close. `<=` because ties go to the smaller element.","tests":"assert find_closest_elements([1, 2, 3, 4, 5], 4, 3) == [1, 2, 3, 4]\nassert find_closest_elements([1, 2, 3, 4, 5], 4, -1) == [1, 2, 3, 4]\nassert find_closest_elements([1, 2, 3, 4, 5], 4, 10) == [2, 3, 4, 5]\nassert find_closest_elements([1, 1, 2, 3, 4, 5], 4, -1) == [1, 1, 2, 3]\nassert find_closest_elements([1, 3], 1, 2) == [1]\nassert find_closest_elements([1, 5, 10], 1, 9) == [10]","setup":"","unit":"bs"},"bs-run-kc-abs":{"id":"bs-run-kc-abs","type":"mcq","prompt":"Why is there no `abs()` in `x - arr[mid] <= arr[mid + k] - x`?","code":"","options":["If `x` is right of both, the right side goes negative and the search correctly moves right","`abs` is too slow","`arr` has no negatives","It's a bug, it needs `abs`"],"mono":false,"explain":"With `abs`, when both elements are left of `x` with the same value (duplicates), it can move the wrong way. The signed version stays correct in every case.","run":"def with_abs(arr, k, x):\n    lo, hi = 0, len(arr) - k\n    while lo < hi:\n        mid = (lo + hi) // 2\n        if abs(x - arr[mid]) <= abs(arr[mid + k] - x):\n            hi = mid\n        else:\n            lo = mid + 1\n    return arr[lo:lo + k]\nassert with_abs([1, 1, 2, 2, 2, 2, 2, 3, 3], 3, 3) != [2, 3, 3]","unit":"bs"},"bs-run-kc-bug":{"id":"bs-run-kc-bug","type":"bug","prompt":"`find_closest_elements([1, 2, 3, 4, 5], 4, 10)` returns `[1, 2, 3, 4]`. Tap the bug.","lines":["def find_closest_elements(arr, k, x):","    lo, hi = 0, len(arr) - k - 1","    while lo < hi:","        mid = (lo + hi) // 2","        if x - arr[mid] <= arr[mid + k] - x:","            hi = mid","        else:","            lo = mid + 1","    return arr[lo:lo + k]"],"line":1,"fix":"lo, hi = 0, len(arr) - k","explain":"`len(arr) - k` is a valid start, and it's the fallback when every window should move right. Subtracting one more cuts it off.","tests":"assert find_closest_elements([1, 2, 3, 4, 5], 4, 3) == [1, 2, 3, 4]\nassert find_closest_elements([1, 2, 3, 4, 5], 4, -1) == [1, 2, 3, 4]\nassert find_closest_elements([1, 2, 3, 4, 5], 4, 10) == [2, 3, 4, 5]\nassert find_closest_elements([1, 1, 2, 3, 4, 5], 4, -1) == [1, 1, 2, 3]\nassert find_closest_elements([1, 3], 1, 2) == [1]\nassert find_closest_elements([1, 5, 10], 1, 9) == [10]","setup":"","unit":"bs"},"bs-run-kc-bounds":{"id":"bs-run-kc-bounds","type":"mcq","prompt":"Why is `arr[mid + k]` always in range?","code":"","options":["`mid < hi = len(arr) - k`, so `mid + k < len(arr)`","Python lists wrap around","`k` is always 1","`mid` is always 0"],"mono":false,"explain":"Again, `mid` is strictly below `hi` inside the loop. The template keeps every index safe.","run":"","unit":"bs"},"py-dict-teach":{"id":"py-dict-teach","type":"teach","title":"dict, defaultdict, Counter","body":"Pick the container that removes the `if key in d` checks:\n- `defaultdict(list)` for grouping, `defaultdict(int)` for counting by hand.\n- `Counter` when you just need counts. It returns 0 for missing keys.\n- `d.get(key, default)` to read without a `KeyError`.","code":"from collections import defaultdict, Counter\n\ngraph = defaultdict(list)    # missing key → []\ngraph[\"a\"].append(\"b\")\ncount = Counter(\"banana\")    # {'a': 3, 'n': 2, 'b': 1}\ncount.most_common(1)         # [('a', 3)]\nseen = {}\nseen.get(\"x\", 0)             # 0, no KeyError","tests":"assert graph == {\"a\": [\"b\"]}\nassert count.most_common(1) == [(\"a\", 3)]","unit":"py"},"py-counter-most":{"id":"py-counter-most","type":"predict","prompt":"What does the last line evaluate to?","code":"","expr":"Counter('banana').most_common(1)","options":["[('a', 3)]","('a', 3)","{'a': 3}","['a']"],"mono":true,"explain":"`most_common(k)` returns a **list** of `(item, count)` tuples, even for `k = 1`. Use `most_common(1)[0][0]` for just the item.","unit":"py"},"py-dd-insert":{"id":"py-dd-insert","type":"predict","prompt":"What does the last line evaluate to?","code":"d = defaultdict(int)\nd['x'] += 1\nd['y']","expr":"len(d)","options":["2","1","0","KeyError"],"mono":true,"explain":"Just **reading** a missing key from a `defaultdict` inserts it. Check with `key in d` or `d.get(key)` if you don't want that, for example while iterating over `d`.","unit":"py"},"py-counter-missing":{"id":"py-counter-missing","type":"predict","prompt":"What does the last line evaluate to?","code":"c = Counter('aab')","expr":"c['z']","options":["0","KeyError","None","1"],"mono":true,"explain":"`Counter` returns 0 for a missing key, and unlike `defaultdict` it does **not** insert it.","unit":"py"},"py-counter-eq":{"id":"py-counter-eq","type":"predict","prompt":"What does the last line evaluate to?","code":"","expr":"Counter('aab') == Counter('aba')","options":["True","False","TypeError","None"],"mono":true,"explain":"Order doesn't matter, only the counts. That makes this a one-line anagram check.","unit":"py"},"py-anagram-key":{"id":"py-anagram-key","type":"mcq","prompt":"Group anagrams: which key works for the dict?","code":"","options":["`tuple(sorted(word))`","`sorted(word)`","`set(word)`","`sum(map(ord, word))`"],"mono":true,"explain":"Lists can't be dict keys (unhashable), so convert to a tuple. `set` loses counts (`'aab'` = `'ab'`). An ord-sum collides (`'ad'` = `'bc'`). A 26-count tuple also works and is O(n) per word.","run":"try:\n    {sorted(\"ab\"): 1}\n    raise AssertionError(\"list should be unhashable\")\nexcept TypeError:\n    pass\nassert set(\"aab\") == set(\"ab\")\nassert sum(map(ord, \"ad\")) == sum(map(ord, \"bc\"))","unit":"py"},"py-dict-order":{"id":"py-dict-order","type":"predict","prompt":"What does the last line evaluate to?","code":"d = {'b': 2, 'a': 1}","expr":"list(d)","options":["['b', 'a']","['a', 'b']","[('b', 2), ('a', 1)]","[2, 1]"],"mono":true,"explain":"Iterating over a dict gives its **keys** in insertion order (guaranteed since Python 3.7).","unit":"py"},"py-dict-zip":{"id":"py-dict-zip","type":"predict","prompt":"What does the last line evaluate to?","code":"","expr":"dict(zip('ab', [1, 2]))","options":["{'a': 1, 'b': 2}","[('a', 1), ('b', 2)]","{'ab': [1, 2]}","{'a': 2, 'b': 1}"],"mono":true,"explain":"`zip` pairs items up, and `dict()` turns pairs into key/value entries. A handy way to build a map from two lists.","unit":"py"},"py-dd-cloze":{"id":"py-dd-cloze","type":"cloze","prompt":"Build an adjacency list from an edge list (undirected).","code":"def build(edges):\n    graph = ___\n    for a, b in edges:\n        graph[a].append(b)\n        graph[b].append(a)\n    return graph","options":["defaultdict(list)","{}","defaultdict(int)","Counter()"],"mono":true,"explain":"`defaultdict(list)` creates an empty list the first time you touch a key, so `.append` just works.","tests":"g = build([(1, 2), (2, 3)])\nassert g[2] == [1, 3]\nassert g[1] == [2]","setup":"","unit":"py"},"py-sort-teach":{"id":"py-sort-teach","type":"teach","title":"Sorting, heapq, deque","body":"- `sorted(xs, key=...)` returns a new list. `xs.sort()` sorts in place and returns `None`.\n- Sort by several fields with a tuple key. Use `-x` for descending numbers.\n- `heapq` is a **min**-heap on a plain list. For a max-heap, push `-x`.\n- `deque` gives O(1) `append`, `appendleft`, `pop` and `popleft`. Use it for BFS queues.","code":"pairs = [[1, 5], [1, 2], [0, 9]]\nsorted(pairs, key=lambda p: (p[0], -p[1]))   # [[0, 9], [1, 5], [1, 2]]\n\nh = []\nheappush(h, 3); heappush(h, 1)\nheappop(h)           # 1, the smallest\nheappush(h, -10)     # max-heap trick: store negatives\n\nq = deque([1, 2])\nq.popleft()          # 1","tests":"assert sorted(pairs, key=lambda p: (p[0], -p[1])) == [[0, 9], [1, 5], [1, 2]]\nassert list(q) == [2]","unit":"py"},"py-sort-len":{"id":"py-sort-len","type":"predict","prompt":"What does the last line evaluate to?","code":"","expr":"sorted(['bb', 'a', 'ccc'], key=len)","options":["['a', 'bb', 'ccc']","['ccc', 'bb', 'a']","['a', 'bb', 'ccc', 3]","[1, 2, 3]"],"mono":true,"explain":"`key` decides what to compare, but the original items come back.","unit":"py"},"py-sort-tuple":{"id":"py-sort-tuple","type":"predict","prompt":"What does the last line evaluate to?","code":"","expr":"sorted([[1, 5], [1, 2], [0, 9]], key=lambda p: (p[0], -p[1]))","options":["[[0, 9], [1, 5], [1, 2]]","[[0, 9], [1, 2], [1, 5]]","[[1, 5], [1, 2], [0, 9]]","[[1, 2], [1, 5], [0, 9]]"],"mono":true,"explain":"Tuples compare field by field: first by `p[0]` ascending, then by `-p[1]`, which puts the bigger `p[1]` first.","unit":"py"},"py-sort-none":{"id":"py-sort-none","type":"predict","prompt":"What does the last line evaluate to?","code":"nums = [3, 1, 2]\nresult = nums.sort()","expr":"result","options":["None","[1, 2, 3]","[3, 2, 1]","TypeError"],"mono":true,"explain":"`list.sort()` sorts in place and returns `None`. A classic bug: `nums = nums.sort()` wipes out your list.","unit":"py"},"py-heap-pop":{"id":"py-heap-pop","type":"predict","prompt":"What does the last line evaluate to?","code":"h = [5, 1, 4]\nheapify(h)","expr":"heappop(h)","options":["1","5","4","[1, 4, 5]"],"mono":true,"explain":"`heapify` makes a min-heap in O(n). `heappop` returns the smallest element.","unit":"py"},"py-maxheap":{"id":"py-maxheap","type":"mcq","prompt":"Max-heap in Python?","code":"","options":["Push `-x`, and negate again when you pop","`heapify(h, reverse=True)`","`heapq.maxheap(h)`","`heappush(h, x)`, then pop from the end"],"mono":false,"explain":"`heapq` only has a min-heap in the versions interview platforms usually run. Python 3.14 added `heappush_max` and friends, but negating is the safe habit. For tuples, negate the priority field: `(-count, word)`.","run":"","unit":"py"},"py-heap-tie":{"id":"py-heap-tie","type":"mcq","prompt":"`heappush(h, (dist, node))` crashes with `TypeError` when two distances tie and the nodes are objects. Fix?","code":"","options":["Push `(dist, i, node)` with a unique counter `i`","Use `sorted()` instead","Push `(node, dist)`","Wrap it in `try/except`"],"mono":false,"explain":"On a tie, Python compares the next tuple field. A unique counter in between guarantees it never reaches `node`.","run":"","unit":"py"},"py-deque":{"id":"py-deque","type":"predict","prompt":"What does the last line evaluate to?","code":"q = deque([1, 2, 3])\nq.appendleft(0)\nq.pop()","expr":"list(q)","options":["[0, 1, 2]","[1, 2, 3]","[0, 1, 2, 3]","[3, 0, 1, 2]"],"mono":true,"explain":"`appendleft(0)` → `[0, 1, 2, 3]`, then `pop()` removes from the **right** → `[0, 1, 2]`. BFS uses `popleft()`.","unit":"py"},"py-traps-teach":{"id":"py-traps-teach","type":"teach","title":"Syntax traps that cost interviews","body":"- `[[0] * n] * m` copies the **same** row `m` times. Use a comprehension.\n- `//` rounds toward −∞, so `-7 // 2 == -4`.\n- Default arguments are created once: never write `def f(path=[])`.\n- In backtracking, append a copy: `res.append(path[:])`.","code":"grid = [[0] * cols for _ in range(rows)]   # safe 2D grid\n-7 // 2          # -4\nint(-7 / 2)      # -3, truncates toward 0\nres.append(path[:])","tests":"","unit":"py"},"py-grid-alias":{"id":"py-grid-alias","type":"predict","prompt":"What does the last line evaluate to?","code":"grid = [[0] * 2] * 2\ngrid[0][0] = 1","expr":"grid","options":["[[1, 0], [1, 0]]","[[1, 0], [0, 0]]","[[0, 0], [0, 0]]","[[1, 1], [0, 0]]"],"mono":true,"explain":"`[[0] * 2] * 2` makes two references to **one** row list. Writing to one row changes \"both\". Use `[[0] * cols for _ in range(rows)]`.","unit":"py"},"py-floordiv":{"id":"py-floordiv","type":"predict","prompt":"What does the last line evaluate to?","code":"","expr":"-7 // 2","options":["-4","-3","-3.5","-4.0"],"mono":true,"explain":"Floor division rounds toward −∞. To truncate toward zero like C or Java, use `int(-7 / 2)`. This matters in *Evaluate Reverse Polish Notation*.","unit":"py"},"py-path-copy":{"id":"py-path-copy","type":"predict","prompt":"What does the last line evaluate to?","code":"res, path = [], []\nfor x in [1, 2]:\n    path.append(x)\n    res.append(path)\npath.clear()","expr":"res","options":["[[], []]","[[1], [1, 2]]","[[1, 2], [1, 2]]","[[1], [2]]"],"mono":true,"explain":"Both entries are the **same** `path` list, which was emptied by the end. Append `path[:]` to save a snapshot.","unit":"py"},"py-zip-star":{"id":"py-zip-star","type":"predict","prompt":"What does the last line evaluate to?","code":"","expr":"list(zip(*[[1, 2], [3, 4]]))","options":["[(1, 3), (2, 4)]","[(1, 2), (3, 4)]","[[1, 3], [2, 4]]","[1, 2, 3, 4]"],"mono":true,"explain":"`zip(*grid)` transposes: it yields columns as tuples. Wrap each in `list()` if you need lists.","unit":"py"},"py-ord":{"id":"py-ord","type":"predict","prompt":"What does the last line evaluate to?","code":"","expr":"ord('c') - ord('a')","options":["2","3","'2'","99"],"mono":true,"explain":"Maps letters to `0..25`, for a 26-slot count array: `count[ord(ch) - ord('a')] += 1`.","unit":"py"},"py-divmod":{"id":"py-divmod","type":"predict","prompt":"What does the last line evaluate to?","code":"","expr":"divmod(7, 3)","options":["(2, 1)","(1, 2)","2.333","[2, 1]"],"mono":true,"explain":"`(quotient, remainder)` in one call. Handy for turning an index into a grid cell: `r, c = divmod(i, cols)`.","unit":"py"},"py-enumerate":{"id":"py-enumerate","type":"predict","prompt":"What does the last line evaluate to?","code":"","expr":"list(enumerate('ab', 1))","options":["[(1, 'a'), (2, 'b')]","[(0, 'a'), (1, 'b')]","[('a', 1), ('b', 2)]","[1, 2]"],"mono":true,"explain":"The second argument sets the starting index.","unit":"py"},"py-inf":{"id":"py-inf","type":"predict","prompt":"What does the last line evaluate to?","code":"","expr":"min([], default=float('inf'))","options":["inf","0","ValueError","None"],"mono":true,"explain":"`min` of an empty list raises `ValueError` unless you pass `default=`. `float('inf')` is the usual starting value for a running minimum.","unit":"py"}},"comingSoon":["Sliding Window","Two Pointers","Hash Map & Counting","BFS / DFS on Grids","Tree DFS","Heap / Top-K","Intervals","Prefix Sum","Monotonic Stack","Backtracking","Dynamic Programming","Linked List","Topological Sort","Union-Find","Trie"]};</script>
+<script>
+(function () {
+  'use strict';
+
+  const C = window.IC_CONTENT;
+  const CARDS = C.cards;
+  const KEY = 'interviewcram.v1';
+  const INTERVALS = [0, 1, 3, 7, 16, 35]; // days until the next review, by memory box
+  const root = document.getElementById('app');
+
+  // ------------------------------------------------------------ icons
+  const svg = (body, extra = '') =>
+    `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" ${extra}>${body}</svg>`;
+  const I = {
+    flame: svg('<path d="M12 22c4.4 0 7-2.9 7-6.6 0-3.9-2.7-6.2-4.6-9.4-.4 2.1-1.4 3.4-2.8 4.1C11.5 7.2 10.4 4.3 8.2 2c.3 3.9-3.2 6.6-3.2 11.1C5 18.6 7.6 22 12 22z"/>'),
+    bolt: svg('<path d="M13 2 4 14h7l-1 8 9-12h-7l1-8z"/>'),
+    path: svg('<path d="M3 11.5 12 4l9 7.5"/><path d="M5.5 9.5V20h13V9.5"/><path d="M10 20v-5h4v5"/>'),
+    review: svg('<path d="M20 12a8 8 0 1 1-2.3-5.6"/><path d="M20 4v5h-5"/>'),
+    book: svg('<path d="M4 4.5A1.5 1.5 0 0 1 5.5 3H11v17H5.5A1.5 1.5 0 0 1 4 18.5z"/><path d="M20 4.5A1.5 1.5 0 0 0 18.5 3H13v17h5.5a1.5 1.5 0 0 0 1.5-1.5z"/>'),
+    me: svg('<circle cx="12" cy="8" r="4"/><path d="M4 21c1.3-4 4.3-6 8-6s6.7 2 8 6"/>'),
+    lock: svg('<rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/>'),
+    check: svg('<path d="m5 12.5 4.5 4.5L19 7.5"/>', 'stroke-width="3"'),
+    x: svg('<path d="M6 6l12 12M18 6 6 18"/>', 'stroke-width="3"'),
+    close: svg('<path d="M6 6l12 12M18 6 6 18"/>'),
+    clock: svg('<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>'),
+    spot: svg('<path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/>'),
+    template: svg('<path d="m8 6-6 6 6 6M16 6l6 6-6 6"/>'),
+    variants: svg('<circle cx="6" cy="5" r="2.2"/><circle cx="6" cy="19" r="2.2"/><circle cx="18" cy="7" r="2.2"/><path d="M6 7.2v9.6M18 9.2c0 5-6 3.5-11 7.8"/>'),
+    moves: svg('<path d="m15 4 1.4 3.6L20 9l-3.6 1.4L15 14l-1.4-3.6L10 9l3.6-1.4z"/><path d="M4 20l7-7"/>'),
+    problems: svg('<path d="M9 3h6v3a2 2 0 1 0 0 4v3h3a2 2 0 1 1 4 0"/><path d="M3 9h3a2 2 0 1 1 4 0h3v12H3z"/>'),
+    legendary: svg('<path d="m3 8 4.5 4L12 5l4.5 7L21 8l-2 11H5z"/>'),
+    teach: svg('<path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-3.6 10.8c.6.5 1 1.2 1 2V16h5.2v-.2c0-.8.4-1.5 1-2A6 6 0 0 0 12 3z"/>'),
+    back: svg('<path d="M15 5l-7 7 7 7"/>'),
+    trophy: svg('<path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0z"/><path d="M7 6H4a3 3 0 0 0 3 4M17 6h3a3 3 0 0 1-3 4"/>'),
+  };
+
+  // ------------------------------------------------------------ text helpers
+  const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+
+  function inline(s) {
+    // pull code spans out first so * and ** inside code are left alone
+    const codes = [];
+    const t = esc(String(s).replace(/`([^`]*)`/g, (_, c) => { codes.push(c); return `\u0000${codes.length - 1}\u0000`; }))
+      .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+      .replace(/(^|[^*\w])\*(?=\S)(.+?)\*(?!\w)/g, '$1<em>$2</em>');
+    return t.replace(/\u0000(\d+)\u0000/g, (_, i) => `<code>${esc(codes[i])}</code>`);
+  }
+
+  function rich(text) {
+    // blank lines split blocks; inside a block, runs of "- " or "1. " lines become lists
+    const out = [];
+    for (const block of String(text).split(/\n\s*\n/)) {
+      let para = [], list = null;
+      const flushPara = () => { if (para.length) out.push(`<p>${para.map(inline).join(' ')}</p>`); para = []; };
+      const flushList = () => { if (list) out.push(`<${list.tag}>${list.items.map((li) => `<li>${inline(li)}</li>`).join('')}</${list.tag}>`); list = null; };
+      for (const raw of block.split('\n')) {
+        const l = raw.trim();
+        if (!l) continue;
+        const m = l.match(/^(- |\d+\.\s)(.*)$/);
+        if (m) {
+          const tag = m[1] === '- ' ? 'ul' : 'ol';
+          flushPara();
+          if (!list || list.tag !== tag) { flushList(); list = { tag, items: [] }; }
+          list.items.push(m[2]);
+        } else {
+          flushList();
+          para.push(l);
+        }
+      }
+      flushPara();
+      flushList();
+    }
+    return out.join('');
+  }
+
+  const KW = new Set('def return if elif else while for in not and or is None True False class import from as lambda yield pass break continue with try except finally raise global nonlocal del assert'.split(' '));
+  const BI = new Set('len range min max sum sorted enumerate zip list dict set tuple int str float abs map filter any all print bisect_left bisect_right insort heappush heappop heapify deque defaultdict Counter divmod ord chr reversed isinstance self cache math'.split(' '));
+
+  /** Highlight Python. `blank` (html) replaces the `___` token when given. */
+  function hl(code, blank) {
+    const re = /(#[^\n]*)|("(?:[^"\\\n]|\\.)*"|'(?:[^'\\\n]|\\.)*')|(\b\d+(?:\.\d+)?\b)|(\w+)|(\s+)|([\s\S])/g;
+    let out = '', prev = '', m;
+    while ((m = re.exec(code))) {
+      if (m[1]) { out += `<span class="t-com">${esc(m[1])}</span>`; prev = ''; }
+      else if (m[2]) { out += `<span class="t-str">${esc(m[2])}</span>`; prev = ''; }
+      else if (m[3]) { out += `<span class="t-num">${m[3]}</span>`; prev = ''; }
+      else if (m[4]) {
+        const w = m[4];
+        if (w === '___' && blank !== undefined) out += blank;
+        else if (KW.has(w)) out += `<span class="t-kw">${w}</span>`;
+        else if (prev === 'def' || prev === 'class') out += `<span class="t-fn">${w}</span>`;
+        else if (BI.has(w)) out += `<span class="t-bi">${w}</span>`;
+        else out += esc(w);
+        prev = w;
+      }
+      else if (m[5]) out += m[5];
+      else { out += esc(m[6]); prev = ''; }
+    }
+    return out;
+  }
+
+  const codeBlock = (code, blank) => `<pre class="code">${hl(code, blank)}</pre>`;
+
+  function shuffle(a) {
+    a = a.slice();
+    for (let i = a.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+  }
+
+  // ------------------------------------------------------------ dates
+  const dayStr = (d = new Date()) =>
+    `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+  const addDays = (s, n) => { const [y, m, d] = s.split('-').map(Number); return dayStr(new Date(y, m - 1, d + n)); };
+  const today = () => dayStr();
+
+  // ------------------------------------------------------------ state
+  const fresh = () => ({
+    v: 1, xp: 0, goal: 30,
+    streak: { count: 0, last: null, best: 0 },
+    daily: { day: null, xp: 0 },
+    history: {}, lessons: {}, cards: {}, active: null, last: null,
+  });
+
+  function load() {
+    try {
+      const raw = localStorage.getItem(KEY);
+      if (raw) return Object.assign(fresh(), JSON.parse(raw));
+    } catch (e) { /* storage blocked: run without persistence */ }
+    return fresh();
+  }
+  function save() {
+    try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) { /* ignore */ }
+  }
+
+  let S = load();
+  const ui = { tab: 'path', screen: 'tabs', topic: null, guide: C.units[0].id, msg: null, resetArmed: false };
+
+  function streakNow() {
+    const t = today();
+    return S.streak.last === t || S.streak.last === addDays(t, -1) ? S.streak.count : 0;
+  }
+  function dailyXP() { return S.daily.day === today() ? S.daily.xp : 0; }
+
+  function awardXP(n) {
+    const t = today();
+    if (S.daily.day !== t) S.daily = { day: t, xp: 0 };
+    S.daily.xp += n;
+    S.xp += n;
+    S.history[t] = (S.history[t] || 0) + n;
+  }
+  function bumpStreak() {
+    const t = today();
+    if (S.streak.last === t) return;
+    S.streak.count = S.streak.last === addDays(t, -1) ? S.streak.count + 1 : 1;
+    S.streak.last = t;
+    S.streak.best = Math.max(S.streak.best, S.streak.count);
+  }
+
+  // spaced repetition: right → next box, wrong → back to box 0 (due today)
+  function grade(id, ok) {
+    const c = S.cards[id] || (S.cards[id] = { box: 0, due: null, right: 0, wrong: 0 });
+    if (ok) { c.box = Math.min(c.box + 1, INTERVALS.length - 1); c.right++; }
+    else { c.box = 0; c.wrong++; }
+    c.due = addDays(today(), INTERVALS[c.box]);
+    c.last = ok;
+  }
+  const dueCards = () => {
+    const t = today();
+    return Object.keys(S.cards).filter((id) => CARDS[id] && S.cards[id].due <= t)
+      .sort((a, b) => (S.cards[a].due < S.cards[b].due ? -1 : 1));
+  };
+  const mistakeCards = () => Object.keys(S.cards).filter((id) => CARDS[id] && S.cards[id].last === false);
+
+  // ------------------------------------------------------------ content lookups
+  const LESSONS = {};
+  for (const unit of C.units) {
+    for (const level of unit.levels) {
+      for (const lesson of level.lessons) LESSONS[lesson.id] = { lesson, level, unit };
+    }
+  }
+  const unitById = (id) => C.units.find((u) => u.id === id);
+  const lessonDone = (id) => (S.lessons[id] && S.lessons[id].done) || 0;
+  const unitCardIds = (unit) => Object.keys(CARDS).filter((id) => CARDS[id].unit === unit.id && CARDS[id].type !== 'teach');
+
+  // ------------------------------------------------------------ sessions
+  function begin(session) {
+    S.active = Object.assign({ pos: 0, done: [], first: {}, wrong: 0 }, session, { total: new Set(session.queue).size });
+    ui.screen = 'lesson';
+    resetCard();
+    save();
+    render();
+  }
+
+  function startLesson(lessonId) {
+    const { lesson, level, unit } = LESSONS[lessonId];
+    if (lesson.sample) {
+      const pool = shuffle(unitCardIds(unit));
+      // weak cards first, then the rest
+      pool.sort((a, b) => ((S.cards[a] || { box: 0 }).box) - ((S.cards[b] || { box: 0 }).box));
+      begin({ mode: 'legendary', lessonId, unit: unit.id, back: unit.id, title: `${unit.title}: ${lesson.title}`,
+        queue: shuffle(pool.slice(0, lesson.sample)), seconds: lesson.seconds || 40 });
+    } else {
+      begin({ mode: 'lesson', lessonId, unit: unit.id, back: unit.id, title: `${unit.title}: ${lesson.title}`, queue: lesson.cards.slice() });
+    }
+  }
+
+  function startMix(unitIds) {
+    const pool = shuffle(C.units.filter((u) => unitIds.includes(u.id)).flatMap(unitCardIds));
+    // weakest (unseen counts as weak) first, then pick 8 and shuffle them
+    pool.sort((a, b) => ((S.cards[a] || { box: -1 }).box) - ((S.cards[b] || { box: -1 }).box));
+    const queue = shuffle(pool.slice(0, 8));
+    begin({ mode: 'mix', title: 'Quick mix', unit: CARDS[queue[0]].unit, queue, back: unitIds.length === 1 ? unitIds[0] : null });
+  }
+
+  function startReview(ids, title) {
+    if (!ids.length) return;
+    begin({ mode: 'review', title, unit: CARDS[ids[0]].unit, queue: shuffle(ids).slice(0, 12) });
+  }
+
+  const current = () => S.active && CARDS[S.active.queue[S.active.pos]];
+
+  function resetCard() {
+    ui.sel = null;
+    ui.built = [];
+    ui.verdict = null;
+    ui.perm = null;
+    ui.pool = null;
+    ui.deadline = S.active && S.active.mode === 'legendary' ? Date.now() + S.active.seconds * 1000 : null;
+  }
+
+  function ready(card) {
+    if (card.type === 'order') return ui.built.length === card.lines.length;
+    return ui.sel !== null;
+  }
+
+  function isCorrect(card) {
+    switch (card.type) {
+      case 'mcq': case 'predict': case 'cloze': return ui.sel === 0;
+      case 'order': return ui.built.length === card.lines.length && ui.built.every((v, k) => v === k);
+      case 'bug': return ui.sel === card.line;
+      case 'compare': return ui.sel === card.answer;
+      default: return true;
+    }
+  }
+
+  function check(timedOut) {
+    const card = current();
+    const a = S.active;
+    const ok = !timedOut && isCorrect(card);
+    ui.verdict = ok ? 'good' : 'bad';
+    ui.timedOut = !!timedOut;
+    if (!(card.id in a.first)) {
+      a.first[card.id] = ok;
+      grade(card.id, ok);
+    }
+    if (ok) {
+      if (!a.done.includes(card.id)) a.done.push(card.id);
+    } else {
+      a.wrong++;
+      if (a.mode === 'legendary') { if (!a.done.includes(card.id)) a.done.push(card.id); }
+      else a.queue.push(card.id); // ask again at the end, Duolingo-style
+    }
+    save();
+    render();
+  }
+
+  function next() {
+    const a = S.active;
+    const card = current();
+    if (card.type === 'teach' && !a.done.includes(card.id)) a.done.push(card.id);
+    a.pos++;
+    if (a.pos >= a.queue.length) return finish();
+    resetCard();
+    save();
+    render();
+    const body = root.querySelector('.lesson-body');
+    if (body) body.scrollTop = 0;
+  }
+
+  function finish() {
+    const a = S.active;
+    const graded = Object.values(a.first);
+    const right = graded.filter(Boolean).length;
+    const acc = graded.length ? Math.round((100 * right) / graded.length) : 100;
+    let xp = 10, passed = true;
+    if (a.mode === 'lesson') xp = a.wrong === 0 ? 15 : 10;
+    if (a.mode === 'legendary') { passed = acc >= 80; xp = passed ? 25 : 5; }
+    if (a.lessonId && passed) {
+      const rec = S.lessons[a.lessonId] || { done: 0, best: 0 };
+      rec.done++;
+      rec.best = Math.max(rec.best, acc);
+      S.lessons[a.lessonId] = rec;
+    }
+    awardXP(xp);
+    bumpStreak();
+    const missed = Object.keys(a.first).filter((id) => !a.first[id]);
+    S.last = { mode: a.mode, title: a.title, xp, acc, passed, missed, streak: S.streak.count, back: a.back || null };
+    S.active = null;
+    ui.screen = 'done';
+    save();
+    render();
+  }
+
+  // ------------------------------------------------------------ views: shared
+  function topbar() {
+    const st = streakNow();
+    const doneToday = S.streak.last === today();
+    return `<header class="topbar">
+      <div class="brand">Interview<span>Cram</span></div>
+      <span class="chip-stat ${doneToday ? 'hot' : 'cold'}" aria-label="${st} day streak">${I.flame}${st}</span>
+      <span class="chip-stat" aria-label="${S.xp} total XP" style="color:var(--gold)">${I.bolt}${S.xp}</span>
+    </header>`;
+  }
+
+  function tabbar() {
+    const due = dueCards().length;
+    const tabs = [['path', 'Topics', I.path], ['review', 'Review', I.review], ['guide', 'Guide', I.book], ['me', 'Me', I.me]];
+    return `<nav class="tabbar"><div class="tabbar-inner">${tabs.map(([id, label, icon]) => `
+      <button class="tab" data-act="tab" data-id="${id}" ${ui.tab === id ? 'aria-current="page"' : ''}>
+        <span class="tab-icon">${icon}${id === 'review' && due ? `<span class="badge">${due > 99 ? '99+' : due}</span>` : ''}</span>${label}
+      </button>`).join('')}</div></nav>`;
+  }
+
+  // ------------------------------------------------------------ views: topics
+  const KIND_ICON = { spot: I.spot, template: I.template, variants: I.variants, moves: I.moves, problems: I.problems, legendary: I.legendary };
+
+  function unitProgress(unit) {
+    const lessons = unit.levels.flatMap((lv) => lv.lessons);
+    return { total: lessons.length, done: lessons.filter((l) => lessonDone(l.id) > 0).length };
+  }
+
+  function resumeBanner() {
+    const a = S.active;
+    if (!a) return '';
+    return `<div class="resume" data-hue style="--hue:${unitById(a.unit).hue}">
+      <p>${esc(a.title)}<small>${a.done.length} of ${a.total} done · ${a.mode === 'legendary' ? 'timed' : 'saved'}</small></p>
+      <button class="link-btn" data-act="discard">Discard</button>
+      <button class="btn small" data-act="resume">Resume</button>
+    </div>`;
+  }
+
+  function viewHome() {
+    const goal = S.goal, got = dailyXP();
+    const pct = Math.min(1, got / goal);
+    const r = 22, circ = 2 * Math.PI * r;
+    let html = topbar() + resumeBanner();
+    html += `<section class="daily">
+      <svg class="ring" viewBox="0 0 52 52"><circle class="track" cx="26" cy="26" r="${r}"/>
+        <circle class="fill" cx="26" cy="26" r="${r}" stroke-dasharray="${circ}" stroke-dashoffset="${circ * (1 - pct)}" transform="rotate(-90 26 26)"/></svg>
+      <div class="daily-text"><strong>${got} / ${goal} XP today</strong>
+        <p>${got >= goal ? 'Daily goal done. Anything more is a bonus.' : 'Each activity takes 2–3 minutes and is worth 10–15 XP.'}</p></div>
+    </section>
+    <button class="quick" data-act="mix">
+      <span class="quick-icon">${I.bolt}</span>
+      <span><strong>Quick mix</strong><small>8 cards from any topic, weakest first</small></span>
+    </button>
+    <h2 class="section-title">Topics</h2>
+    <div class="topics">`;
+    for (const unit of C.units) {
+      const p = unitProgress(unit);
+      html += `<button class="topic" data-hue style="--hue:${unit.hue}" data-act="topic" data-id="${unit.id}">
+        <span class="topic-icon">${KIND_ICON[unit.levels[1] ? unit.levels[1].kind : 'template']}</span>
+        <span class="topic-text"><strong>${esc(unit.title)}</strong><small>${esc(unit.subtitle)}</small>
+          <span class="bar"><span style="width:${Math.round((100 * p.done) / p.total)}%"></span></span>
+          <small>${p.done} of ${p.total} activities done</small></span>
+      </button>`;
+    }
+    html += `</div><div class="locked-list"><h3>Coming next</h3>${C.comingSoon.map((t) => `<div class="locked">${I.lock}${esc(t)}</div>`).join('')}</div>`;
+    return html;
+  }
+
+  function viewTopic() {
+    const unit = unitById(ui.topic);
+    let html = `${topbar()}<button class="back" data-act="topics">${I.back}All topics</button>`;
+    html += `<div data-hue style="--hue:${unit.hue}">
+      <div class="unit-head"><div><h2>${esc(unit.title)}</h2><p>${esc(unit.subtitle)}</p></div>
+        <button class="guide-btn" data-act="guide" data-id="${unit.id}">${I.book}Guide</button></div>
+      <button class="quick" data-act="mix-topic" data-id="${unit.id}">
+        <span class="quick-icon">${I.bolt}</span>
+        <span><strong>Quick mix</strong><small>8 random cards from ${esc(unit.title)}</small></span>
+      </button>`;
+    for (const lv of unit.levels) {
+      html += `<h2 class="section-title">${KIND_ICON[lv.kind] || ''}${esc(lv.title)}</h2>`;
+      for (const ls of lv.lessons) {
+        const n = lessonDone(ls.id);
+        const meta = ls.sample
+          ? `${ls.sample} cards · ${ls.seconds}s each · pass with 80%`
+          : `${ls.cards.length} cards · ${Math.max(2, Math.round(ls.cards.length / 3))} min`;
+        html += `<button class="lesson-row ${n ? 'done' : ''}" data-act="start" data-id="${ls.id}">
+          <span class="tick">${n ? I.check : ls.sample ? I.clock : I.bolt}</span>
+          <div><strong>${esc(ls.title)}</strong><small>${meta}${n ? ` · done ${n}×` : ''}</small></div>
+        </button>`;
+      }
+    }
+    return html + '</div>';
+  }
+
+  // ------------------------------------------------------------ views: review
+  function viewReview() {
+    const due = dueCards(), miss = mistakeCards();
+    const boxes = [0, 0, 0, 0, 0, 0];
+    for (const id in S.cards) if (CARDS[id]) boxes[S.cards[id].box]++;
+    const maxB = Math.max(1, ...boxes);
+    const upcoming = Object.values(S.cards).map((c) => c.due).filter((d) => d > today()).sort()[0];
+    return `${topbar()}
+      <h1 class="page-title">Review</h1>
+      <p class="page-sub">Cards come back just before you'd forget them. Miss one and it returns today.</p>
+      <section class="panel">
+        <div class="big-num">${due.length}<small>card${due.length === 1 ? '' : 's'} due</small></div>
+        <p>${due.length ? 'A short mixed session from everything you’ve studied.' : upcoming ? `Nothing due. Next review on ${upcoming}.` : 'Finish a lesson and its cards will start showing up here.'}</p>
+        <button class="btn block" data-act="review-due" ${due.length ? '' : 'disabled'}>Start review</button>
+      </section>
+      <section class="panel">
+        <h2>Mistakes</h2>
+        <p>${miss.length ? `${miss.length} card${miss.length === 1 ? '' : 's'} you got wrong last time.` : 'No open mistakes.'}</p>
+        <button class="btn ghost block" data-act="review-miss" ${miss.length ? '' : 'disabled'}>Practice mistakes</button>
+      </section>
+      <section class="panel">
+        <h2>Memory strength</h2>
+        <div class="boxes">${boxes.map((n) => `<div style="height:${Math.round((n / maxB) * 100)}%" title="${n}"></div>`).join('')}</div>
+        <div class="boxes-labels">${['again', '1 day', '3 days', '1 week', '2 weeks', '5 weeks'].map((l, i) => `<span>${boxes[i]}<br>${l}</span>`).join('')}</div>
+      </section>`;
+  }
+
+  // ------------------------------------------------------------ views: guide
+  function viewGuide() {
+    const unit = unitById(ui.guide) || C.units[0];
+    const g = unit.guide;
+    return `${topbar()}
+      <h1 class="page-title">Guide</h1>
+      <p class="page-sub">Cheat sheet for each unit. Skim it before an interview.</p>
+      <div class="guide-tabs">${C.units.map((u) => `<button data-act="guide-unit" data-id="${u.id}" aria-pressed="${u.id === unit.id}">${esc(u.title)}</button>`).join('')}</div>
+      <div data-hue style="--hue:${unit.hue}">
+        <section class="panel"><h2>${esc(unit.title)}</h2><div class="rich">${rich(g.intro)}</div>${codeBlock(g.template)}</section>
+        ${g.variants.length ? `<section class="panel"><h2>Variants</h2>${g.variants.map((v) => `
+          <div class="variant"><strong>${esc(v.name)}</strong>
+            <span class="when"><span class="when-label">When</span>${inline(v.trigger)}</span>
+            <span class="how">${inline(v.how)}</span></div>`).join('')}</section>` : ''}
+        <section class="panel"><h2>Moves</h2>${g.moves.map((m) => `
+          <div class="variant"><strong>${esc(m.name)}</strong><span class="how">${inline(m.body)}</span></div>`).join('')}</section>
+      </div>`;
+  }
+
+  // ------------------------------------------------------------ views: me
+  function viewMe() {
+    const learned = Object.values(S.cards).filter((c) => c.box >= 1).length;
+    const strong = Object.values(S.cards).filter((c) => c.box >= 4).length;
+    const total = Object.values(CARDS).filter((c) => c.type !== 'teach').length;
+    const goals = [[10, 'Casual'], [20, 'Regular'], [30, 'Serious'], [50, 'Intense']];
+    const msg = ui.msg ? `<p class="note ${ui.msg.kind}">${esc(ui.msg.text)}</p>` : '';
+    return `${topbar()}
+      <h1 class="page-title">Progress</h1>
+      <p class="page-sub">Saved on this device after every card.</p>
+      <div class="stat-grid" style="margin-bottom:16px">
+        <div class="stat streak"><b>${streakNow()}</b><span>day streak</span></div>
+        <div class="stat streak"><b>${S.streak.best}</b><span>best streak</span></div>
+        <div class="stat xp"><b>${S.xp}</b><span>total XP</span></div>
+        <div class="stat acc"><b>${learned}<small style="font-size:14px;color:var(--muted)"> / ${total}</small></b><span>cards learned</span></div>
+      </div>
+      <section class="panel">
+        <h2>Daily goal</h2>
+        <div class="goal-picks">${goals.map(([n, l]) => `<button data-act="goal" data-n="${n}" aria-pressed="${S.goal === n}">${n} XP<small>${l}</small></button>`).join('')}</div>
+        <p>${strong} card${strong === 1 ? '' : 's'} at 2+ weeks of memory strength.</p>
+      </section>
+      <section class="panel">
+        <h2>Backup</h2>
+        <p>iOS can clear a web app’s storage. Copy a backup code now and then and keep it in Notes. Paste it here to restore.</p>
+        <textarea id="backup" class="backup" placeholder="Backup code appears here, or paste one to restore" spellcheck="false"></textarea>
+        <div class="row">
+          <button class="btn small" data-act="backup">Copy backup code</button>
+          <button class="btn small ghost" data-act="restore">Restore from code</button>
+        </div>
+        ${msg}
+      </section>
+      <section class="panel">
+        <h2>Reset</h2>
+        <p>Erase all progress on this device.</p>
+        <button class="btn small ${ui.resetArmed ? 'bad' : 'ghost'}" data-act="reset">${ui.resetArmed ? 'Tap again to erase everything' : 'Reset progress'}</button>
+      </section>`;
+  }
+
+  // ------------------------------------------------------------ views: lesson
+  const KIND_LABEL = {
+    teach: ['New concept', I.teach], mcq: ['Choose', I.spot], predict: ['Predict the output', I.template],
+    cloze: ['Fill the blank', I.template], order: ['Build it', I.variants], bug: ['Find the bug', I.spot],
+    compare: ['Cleaner code', I.moves],
+  };
+
+  function optionLabel(card, opt) {
+    return card.type === 'predict' || card.type === 'cloze' ? `<code>${esc(opt)}</code>` : inline(opt);
+  }
+
+  function optionsHTML(card) {
+    if (!ui.perm) ui.perm = shuffle(card.options.map((_, i) => i));
+    const checked = !!ui.verdict;
+    return `<div class="options">${ui.perm.map((i) => {
+      let cls = '';
+      if (checked && i === 0) cls = 'right';
+      else if (checked && i === ui.sel) cls = 'wrong';
+      return `<button class="opt ${card.mono || card.type !== 'mcq' ? 'mono' : ''} ${cls}" data-act="pick" data-i="${i}"
+        aria-pressed="${ui.sel === i}" ${checked ? 'disabled' : ''}>${optionLabel(card, card.options[i])}</button>`;
+    }).join('')}</div>`;
+  }
+
+  function cardHTML(card) {
+    const a = S.active;
+    const [label, icon] = KIND_LABEL[card.type];
+    const head = `<span class="kind ${a.mode === 'review' ? 'review' : ''}">${icon}${a.mode === 'review' ? 'Review · ' : ''}${label}</span>`;
+    const checked = !!ui.verdict;
+    switch (card.type) {
+      case 'teach':
+        return `${head}<h1 class="teach-title">${inline(card.title)}</h1><div class="rich">${rich(card.body)}</div>${card.code ? codeBlock(card.code) : ''}`;
+      case 'mcq':
+        return `${head}<p class="prompt">${inline(card.prompt)}</p>${card.code ? codeBlock(card.code) : ''}${optionsHTML(card)}`;
+      case 'predict':
+        return `${head}<p class="prompt">${inline(card.prompt)}</p>${codeBlock((card.code ? card.code + '\n' : '') + card.expr)}${optionsHTML(card)}`;
+      case 'cloze': {
+        let cls = 'blank', text = '&nbsp;'.repeat(6);
+        if (ui.sel !== null) { cls += ' filled'; text = esc(card.options[ui.sel]); }
+        if (checked) cls += ui.verdict === 'good' ? ' good' : ' bad';
+        return `${head}<p class="prompt">${inline(card.prompt)}</p>${codeBlock(card.code, `<span class="${cls}">${text}</span>`)}${optionsHTML(card)}`;
+      }
+      case 'order': {
+        const all = card.lines.concat(card.distractors);
+        if (!ui.pool) ui.pool = shuffle(all.map((_, i) => i));
+        const builtCls = checked ? (ui.verdict === 'good' ? 'right' : 'wrong') : '';
+        const built = ui.built.map((i, k) => `<button class="chip" data-act="unplace" data-k="${k}" ${checked ? 'disabled' : ''}>${hl(all[i])}</button>`).join('');
+        const pool = ui.pool.filter((i) => !ui.built.includes(i))
+          .map((i) => `<button class="chip" data-act="place" data-i="${i}" ${checked ? 'disabled' : ''}>${hl(all[i])}</button>`).join('');
+        const extra = card.distractors.length ? ` ${card.distractors.length === 1 ? 'One line doesn’t belong.' : `${card.distractors.length} lines don’t belong.`}` : '';
+        return `${head}<p class="prompt">${inline(card.prompt)}</p>
+          <p class="note">Tap lines in order. Tap a placed line to remove it.${extra}</p>
+          <div class="built ${builtCls}">${built}</div><div class="pool">${pool}</div>`;
+      }
+      case 'bug': {
+        const lines = card.lines.map((ln, i) => {
+          let cls = '';
+          if (checked && i === card.line) cls = 'right';
+          else if (checked && i === ui.sel) cls = 'wrong';
+          return `<button class="ln ${cls}" data-act="line" data-i="${i}" aria-pressed="${ui.sel === i}" ${checked ? 'disabled' : ''}>${hl(ln) || ' '}</button>`;
+        }).join('');
+        return `${head}<p class="prompt">${inline(card.prompt)}</p><pre class="code lines">${lines}</pre>`;
+      }
+      case 'compare': {
+        const pick = (k) => {
+          let cls = '';
+          if (checked && k === card.answer) cls = 'right';
+          else if (checked && k === ui.sel) cls = 'wrong';
+          return `<button class="opt ${cls}" data-act="pick-ab" data-k="${k}" aria-pressed="${ui.sel === k}" ${checked ? 'disabled' : ''} style="text-align:center;font-weight:700">${k.toUpperCase()} is cleaner</button>`;
+        };
+        return `${head}<p class="prompt">${inline(card.prompt)}</p>
+          <div class="versions"><div><div class="version-label">VERSION A</div>${codeBlock(card.a)}</div>
+          <div><div class="version-label">VERSION B</div>${codeBlock(card.b)}</div></div>
+          <div class="opt-row">${pick('a')}${pick('b')}</div>`;
+      }
+    }
+    return '';
+  }
+
+  function answerHTML(card) {
+    switch (card.type) {
+      case 'mcq': case 'predict': case 'cloze':
+        return `<p class="fb-answer">Answer: ${optionLabel(card, card.options[0])}</p>`;
+      case 'order': return `<p class="fb-answer">Correct order:</p>${codeBlock(card.lines.join('\n'))}`;
+      case 'bug': return `<p class="fb-answer">Line ${card.line + 1}. Fix: <code>${esc(card.fix)}</code></p>`;
+      case 'compare': return `<p class="fb-answer">Answer: version ${card.answer.toUpperCase()}</p>`;
+    }
+    return '';
+  }
+
+  function footHTML(card) {
+    if (card.type === 'teach') {
+      return `<footer class="lesson-foot"><div><button class="btn block" data-act="next">Got it</button></div></footer>`;
+    }
+    if (!ui.verdict) {
+      return `<footer class="lesson-foot"><div><button class="btn block" data-act="check" ${ready(card) ? '' : 'disabled'}>Check</button></div></footer>`;
+    }
+    const good = ui.verdict === 'good';
+    const fix = card.type === 'bug' && good ? `<p>Fix: <code>${esc(card.fix)}</code></p>` : '';
+    return `<footer class="lesson-foot ${good ? 'is-good' : 'is-bad'}"><div>
+      <div class="fb-head">${good ? I.check : I.x}${good ? 'Correct' : ui.timedOut ? 'Time’s up' : 'Not quite'}</div>
+      <div class="fb-text">${good ? '' : answerHTML(card)}${fix}<div class="rich">${rich(card.explain)}</div></div>
+      <button class="btn block ${good ? 'good' : 'bad'}" data-act="next">Continue</button>
+    </div></footer>`;
+  }
+
+  function viewLesson() {
+    const a = S.active;
+    const card = current();
+    const pct = Math.round((100 * a.done.length) / a.total);
+    const unit = unitById(card.unit);
+    const timer = a.mode === 'legendary' && card.type !== 'teach' ? `<span class="timer" id="timer"></span>` : '';
+    return `<div class="lesson" data-hue style="--hue:${unit.hue}">
+      <div class="lesson-top">
+        <button class="icon-btn" data-act="quit" aria-label="Close lesson">${I.close}</button>
+        <div class="progress" role="progressbar" aria-valuenow="${pct}" aria-valuemin="0" aria-valuemax="100"><div style="width:${pct}%"></div></div>
+        ${timer}
+      </div>
+      <div class="lesson-body"><article class="card">${cardHTML(card)}</article></div>
+      ${footHTML(card)}
+    </div>`;
+  }
+
+  function viewDone() {
+    const r = S.last || { xp: 0, acc: 100, passed: true, missed: [], streak: 0, mode: 'lesson' };
+    const title = r.mode === 'legendary' ? (r.passed ? 'Challenge passed' : 'Not yet') : r.mode === 'review' ? 'Review done' : r.mode === 'mix' ? 'Mix done' : 'Done';
+    const sub = r.mode === 'legendary' && !r.passed ? 'You need 80% to pass. Your misses are now in Review.' : esc(r.title || '');
+    return `<div class="lesson"><div class="done-screen">
+      <div class="medal ${r.passed ? '' : 'failed'}">${r.passed ? I.trophy : I.review}</div>
+      <h1>${title}</h1><p class="note">${sub}</p>
+      <div class="stats">
+        <div class="stat xp"><b>+${r.xp}</b><span>XP</span></div>
+        <div class="stat acc"><b>${r.acc}%</b><span>first try</span></div>
+        <div class="stat streak"><b>${r.streak}</b><span>streak</span></div>
+      </div>
+      <div class="done-actions">
+        <button class="btn block" data-act="home">Continue</button>
+        ${r.missed.length ? `<button class="btn ghost block" data-act="review-last">Retry ${r.missed.length} missed card${r.missed.length === 1 ? '' : 's'}</button>` : ''}
+      </div>
+    </div></div>`;
+  }
+
+  // ------------------------------------------------------------ render
+  let timerHandle = null;
+  function stopTimer() { if (timerHandle) { clearInterval(timerHandle); timerHandle = null; } }
+
+  function tickTimer() {
+    const el = document.getElementById('timer');
+    if (!el || !ui.deadline || ui.verdict) return stopTimer();
+    const left = Math.max(0, Math.ceil((ui.deadline - Date.now()) / 1000));
+    el.textContent = `${left}s`;
+    el.classList.toggle('low', left <= 5);
+    if (left === 0) { stopTimer(); check(true); }
+  }
+
+  function render() {
+    stopTimer();
+    if (ui.screen === 'lesson' && S.active) {
+      root.innerHTML = viewLesson();
+      if (document.getElementById('timer') && !ui.verdict) { tickTimer(); timerHandle = setInterval(tickTimer, 250); }
+      return;
+    }
+    if (ui.screen === 'done') { root.innerHTML = viewDone(); return; }
+    ui.screen = 'tabs';
+    const views = { path: () => (ui.topic && unitById(ui.topic) ? viewTopic() : viewHome()), review: viewReview, guide: viewGuide, me: viewMe };
+    root.innerHTML = `<main class="screen">${views[ui.tab]()}</main>${tabbar()}`;
+  }
+
+  // ------------------------------------------------------------ events
+  function setMsg(text, kind) { ui.msg = { text, kind }; }
+
+  function copyText(text, ta) {
+    ta.value = text;
+    const fallback = () => { ta.focus(); ta.select(); setMsg('Code selected. Copy it from the box.', 'ok'); render(); document.getElementById('backup').value = text; };
+    try {
+      navigator.clipboard.writeText(text).then(() => {
+        setMsg('Backup code copied. Paste it into Notes.', 'ok');
+        render();
+        document.getElementById('backup').value = text;
+      }, fallback);
+    } catch (e) { fallback(); }
+  }
+
+  const actions = {
+    tab: (el) => {
+      if (el.dataset.id === 'path' && ui.tab === 'path') ui.topic = null; // tapping Topics again goes to the list
+      ui.tab = el.dataset.id; ui.msg = null; ui.resetArmed = false; render(); window.scrollTo(0, 0);
+    },
+    topic: (el) => { ui.topic = el.dataset.id; render(); window.scrollTo(0, 0); },
+    topics: () => { ui.topic = null; render(); window.scrollTo(0, 0); },
+    mix: () => startMix(C.units.map((u) => u.id)),
+    'mix-topic': (el) => startMix([el.dataset.id]),
+    start: (el) => startLesson(el.dataset.id),
+    guide: (el) => { ui.guide = el.dataset.id; ui.tab = 'guide'; render(); window.scrollTo(0, 0); },
+    'guide-unit': (el) => { ui.guide = el.dataset.id; render(); },
+    resume: () => { ui.screen = 'lesson'; resetCard(); render(); },
+    discard: () => { S.active = null; save(); render(); },
+    quit: () => { ui.screen = 'tabs'; ui.tab = 'path'; ui.topic = S.active && S.active.back; save(); render(); },
+    home: () => { ui.screen = 'tabs'; ui.tab = 'path'; ui.topic = S.last && S.last.back; render(); window.scrollTo(0, 0); },
+    'review-due': () => startReview(dueCards(), 'Review'),
+    'review-miss': () => startReview(mistakeCards(), 'Mistakes'),
+    'review-last': () => startReview((S.last && S.last.missed) || [], 'Missed cards'),
+    pick: (el) => { ui.sel = Number(el.dataset.i); render(); },
+    'pick-ab': (el) => { ui.sel = el.dataset.k; render(); },
+    line: (el) => { ui.sel = Number(el.dataset.i); render(); },
+    place: (el) => { ui.built.push(Number(el.dataset.i)); render(); },
+    unplace: (el) => { ui.built.splice(Number(el.dataset.k), 1); render(); },
+    check: () => { if (ready(current())) check(false); },
+    next: () => next(),
+    goal: (el) => { S.goal = Number(el.dataset.n); save(); render(); },
+    backup: () => {
+      const ta = document.getElementById('backup');
+      const data = Object.assign({}, S, { active: null });
+      copyText(btoa(unescape(encodeURIComponent(JSON.stringify(data)))), ta);
+    },
+    restore: () => {
+      const raw = document.getElementById('backup').value.trim();
+      try {
+        const data = JSON.parse(decodeURIComponent(escape(atob(raw))));
+        if (!data || data.v !== 1 || typeof data.cards !== 'object') throw new Error('bad');
+        S = Object.assign(fresh(), data, { active: null });
+        save();
+        setMsg('Progress restored.', 'ok');
+      } catch (e) {
+        setMsg('That doesn’t look like a backup code. Copy the whole code and try again.', 'err');
+      }
+      render();
+    },
+    reset: () => {
+      if (!ui.resetArmed) { ui.resetArmed = true; render(); return; }
+      S = fresh();
+      save();
+      ui.resetArmed = false;
+      setMsg('Progress erased.', 'ok');
+      render();
+    },
+  };
+
+  root.addEventListener('click', (e) => {
+    const el = e.target.closest('[data-act]');
+    if (!el || el.disabled) return;
+    const fn = actions[el.dataset.act];
+    if (fn) fn(el);
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if (ui.screen !== 'lesson' || !S.active) return;
+    if (e.key === 'Enter') {
+      const btn = root.querySelector('[data-act="check"]:not(:disabled), [data-act="next"]');
+      if (btn) { e.preventDefault(); btn.click(); }
+    }
+  });
+
+  // Re-render when the app comes back to the foreground on a new day.
+  let lastDay = today();
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'visible' && today() !== lastDay) { lastDay = today(); if (ui.screen === 'tabs') render(); }
+  });
+
+  // Installed PWA only: offline cache and a request to keep storage.
+  if (document.querySelector('link[rel="manifest"]')) {
+    try {
+      if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(() => {});
+      if (navigator.storage && navigator.storage.persist) navigator.storage.persist().catch(() => {});
+    } catch (e) { /* not available */ }
+  }
+
+  render();
+})();
+
+</script>
+
+</body></html>

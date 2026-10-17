@@ -58,6 +58,7 @@ self.addEventListener('fetch', (event) => {
   const req = event.request;
   if (req.method !== 'GET') return;
   const url = new URL(req.url);
+  if (url.pathname.includes('/api/')) return; // chat server: always live
 
   if (req.mode === 'navigate') {
     event.respondWith(networkFirst(req, 'index.html'));

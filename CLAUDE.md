@@ -7,7 +7,7 @@ Duolingo-style, phone-first web app for drilling LeetCode patterns and Python sy
 - Originally built as a Claude artifact, exported here to keep developing in Claude Code.
 - Progress (streaks, completed lessons, review queue) is saved in the browser's `localStorage`.
 - Layout is a single centered phone column with safe-area insets, meant to be used on an iPhone (Safari → Share → Add to Home Screen).
-- Topics: Binary Search, Sliding Window, Two Pointers, Hash Map & Counting, BFS / DFS on Grids, Python Toolkit. `comingSoon` lists the patterns with no content yet (shown as "Not written yet", not locked).
+- Topics: Binary Search, Sliding Window, Two Pointers, Hash Map & Counting, BFS / DFS on Grids, Tree DFS, Heap / Top-K, Intervals, Prefix Sum, Monotonic Stack, Backtracking, Dynamic Programming, Linked List, Topological Sort, Union-Find, Trie, Python Toolkit. `comingSoon` lists patterns with no content yet (shown as "Not written yet", not locked); it is currently empty.
 - "Ask Claude" chat panel on every activity card, hidden mid-question in timed challenges. It POSTs the card context to the Worker at `CHAT_URL` (top of the chat section in `index.html`) with an access code saved in `localStorage`. The Worker (`worker/worker.js`) holds the tutor prompt and the OpenRouter key and forwards to the models in `MODELS` (`worker/wrangler.toml`), limited to DeepSeek, GLM, Kimi and Qwen (the only ones the OpenRouter key allows); IDs not on OpenRouter are skipped at runtime.
 
 ## Running it

@@ -4,7 +4,8 @@ Usage: python3 tools/check_content.py index.html [unit_id ...]
 Executes predict/cloze/order/bug/compare cards against their `tests`, checks that options[0]
 is right and that wrong options really fail. Exits 1 on any error."""
 import json, re, signal, sys
-PRELUDE = ("from bisect import bisect_left, bisect_right, insort\nfrom heapq import heappush, heappop, heapify, heapreplace, nlargest, nsmallest\n"
+PRELUDE = ("from bisect import bisect_left, bisect_right, insort\nfrom heapq import heappush, heappop, heapify, heapreplace, heappushpop, nlargest, nsmallest\n"
+           "from itertools import accumulate, combinations, permutations, product\n"
            "from collections import defaultdict, Counter, deque, OrderedDict\nfrom functools import cache, lru_cache\nimport math\nfrom math import inf\n")
 class TO(Exception): pass
 def _alarm(*a): raise TO()

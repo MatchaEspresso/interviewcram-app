@@ -15,6 +15,7 @@ const SYSTEM = `You are a friendly, sharp coding-interview tutor inside Intervie
 const MAX_BODY = 48_000;
 const MAX_TURNS = 24;
 const OPENROUTER = 'https://openrouter.ai/api/v1/chat/completions';
+const OPENROUTER_MODELS = 'https://openrouter.ai/api/v1/models';
 
 // Constant-time compare so the access code can't be guessed from response timing.
 function sameToken(a, b) {
@@ -36,8 +37,27 @@ function corsHeaders(request, env) {
   };
 }
 
+// OpenRouter's public model list, fetched once per Worker instance. A configured ID that isn't listed
+// (renamed or retired) is dropped, so one stale ID doesn't fail every request.
+let catalog = null;
+async function availableModels(wanted) {
+  if (!catalog) {
+    catalog = fetch(OPENROUTER_MODELS)
+      .then((r) => (r.ok ? r.json() : Promise.reject(new Error(`models ${r.status}`))))
+      .then((d) => new Set((d.data || []).map((m) => m.id)))
+      .catch((e) => { catalog = null; console.warn('Could not load the OpenRouter model list:', e.message); return null; });
+  }
+  const known = await catalog;
+  if (!known) return wanted;
+  const missing = wanted.filter((id) => !known.has(id));
+  if (missing.length) console.warn('Not on OpenRouter, skipped:', missing.join(', '));
+  return wanted.filter((id) => known.has(id));
+}
+
 async function askModel(env, context, messages) {
-  const models = String(env.MODELS || 'openrouter/free').split(',').map((s) => s.trim()).filter(Boolean);
+  const wanted = String(env.MODELS || '').split(',').map((s) => s.trim()).filter(Boolean);
+  const models = (await availableModels(wanted)).slice(0, 3); // OpenRouter's fallback list takes a few models, not many
+  if (!models.length) throw Object.assign(new Error('None of the models in MODELS exist on OpenRouter. Update MODELS in wrangler.toml.'), { status: 500 });
   const body = {
     messages: [{ role: 'system', content: `${SYSTEM}\n\n<card>\n${context}\n</card>` }, ...messages],
     max_tokens: 900,
@@ -56,7 +76,7 @@ async function askModel(env, context, messages) {
     body: JSON.stringify(body),
   });
   const data = await res.json().catch(() => ({}));
-  if (res.status === 429) throw Object.assign(new Error('The free model’s limit is used up for now. Try again later, or switch the Worker to a paid model.'), { status: 429 });
+  if (res.status === 429) throw Object.assign(new Error('The model’s rate limit is used up for now. Try again in a bit.'), { status: 429 });
   if (res.status === 401 || res.status === 403) throw Object.assign(new Error('OpenRouter rejected the Worker’s API key.'), { status: 502 });
   if (res.status === 402) throw Object.assign(new Error('OpenRouter account is out of credits.'), { status: 502 });
   if (!res.ok) throw Object.assign(new Error((data.error && data.error.message) || `OpenRouter error ${res.status}.`), { status: 502 });

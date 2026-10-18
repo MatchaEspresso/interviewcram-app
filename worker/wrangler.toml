@@ -7,7 +7,8 @@ main = "worker.js"
 compatibility_date = "2026-09-01"
 
 [vars]
-# Comma-separated, tried in order. Free models have daily limits.
-# For better answers at roughly $0.0003 per question, use "anthropic/claude-haiku-5.5" (needs OpenRouter credits).
-MODELS = "google/gemma-4-31b-it:free,openrouter/free"
+# Comma-separated, tried in order; the first 3 that exist on OpenRouter are sent.
+# Keep these to DeepSeek, GLM (z-ai), Kimi (moonshotai) and Qwen: the OpenRouter key only allows those.
+# These are paid (roughly $0.0001-0.001 per question) and need OpenRouter credits.
+MODELS = "deepseek/deepseek-v4.1-flash,z-ai/glm-5.3-flash,moonshotai/kimi-k2.6,qwen/qwen3.6-35b-a3b,deepseek/deepseek-v4-flash,z-ai/glm-5.2"
 ALLOWED_ORIGINS = "https://matchaespresso.github.io"

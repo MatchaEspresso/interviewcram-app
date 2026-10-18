@@ -1117,7 +1117,7 @@ textarea.backup {
   // ------------------------------------------------------------ chat
   // Answers come from the Cloudflare Worker in worker/ (OpenRouter behind it). One thread per card, kept until reload.
   // CHAT_URL is the Worker's address, ending in "/". Empty means chat isn't set up yet.
-  const CHAT_URL = '';
+  const CHAT_URL = 'https://interviewcram-chat.interviewcram.workers.dev/';
   const CODE_KEY = 'interviewcram.chatCode';
   const chat = { open: false, cardId: null, threads: {}, busy: false, error: null, avail: null, needCode: false, pending: '' };
   const getCode = () => { try { return localStorage.getItem(CODE_KEY) || ''; } catch (e) { return ''; } };

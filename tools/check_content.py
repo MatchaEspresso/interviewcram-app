@@ -69,6 +69,9 @@ for cid, c in cards.items():
                 if run(setup + c["code"].replace("___", o) + "\n" + tests)[0] == "ok": warns.append(f"{cid}: wrong option {o!r} also passes tests")
             checked += 1
     elif t == "order":
+        allx = c["lines"] + c["distractors"]
+        if any(not l.strip() for l in allx): errs.append(f"{cid}: blank line (renders as an empty chip, so Check never enables)")
+        if len(set(allx)) != len(allx): errs.append(f"{cid}: duplicate lines (only one order is accepted)")
         if tests.strip():
             st, v = run(setup + "\n".join(c["lines"]) + "\n" + tests)
             if st != "ok": errs.append(f"{cid}: order fails: {st} {v}")

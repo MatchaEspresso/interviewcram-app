@@ -720,7 +720,7 @@ textarea.backup {
   }
 
   function ready(card) {
-    if (card.type === 'order') return ui.built.length === card.lines.length;
+    if (card.type === 'order') return ui.built.length > 0; // incomplete answers are graded wrong and show the full order
     return ui.sel !== null;
   }
 
@@ -1021,7 +1021,7 @@ textarea.backup {
           .map((i) => `<button class="chip" data-act="place" data-i="${i}" ${checked ? 'disabled' : ''}>${hl(all[i])}</button>`).join('');
         const extra = card.distractors.length ? ` ${card.distractors.length === 1 ? 'One line doesn’t belong.' : `${card.distractors.length} lines don’t belong.`}` : '';
         return `${head}<p class="prompt">${inline(card.prompt)}</p>
-          <p class="note">Tap lines in order. Tap a placed line to remove it.${extra}</p>
+          <p class="note">Tap lines in order. Tap a placed line to remove it.${extra}${checked ? '' : ` <strong>${ui.built.length} of ${card.lines.length} lines placed.</strong>`}</p>
           <div class="built ${builtCls}">${built}</div><div class="pool">${pool}</div>`;
       }
       case 'bug': {
